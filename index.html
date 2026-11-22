@@ -1,0 +1,1364 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1120" />
+  <title>SessionMD — Crash-Safe Tab Saver, URL Deduplicator &amp; Markdown Workspace</title>
+  <meta name="description" content="Crash-safe Chrome Manifest V3 tab session saver with UTM URL deduplication, Chrome Tab Groups, Obsidian YAML Markdown, formula-guarded CSV/TSV export, and Google NotebookLM source bundles. Zero tracking." />
+  <link rel="canonical" href="https://lhphong09t2.github.io/sessionmd/" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SessionMD by FlowBench Lab" />
+  <meta property="og:title" content="SessionMD — Crash-Safe Tab Saver &amp; Markdown Workspace" />
+  <meta property="og:description" content="Save multi-window Chrome sessions locally with 12-snapshot crash recovery, UTM URL deduplication, Obsidian YAML Markdown, CSV/TSV export, and NotebookLM source packs." />
+  <meta property="og:url" content="https://lhphong09t2.github.io/sessionmd/" />
+  <meta property="og:image" content="https://lhphong09t2.github.io/sessionmd/og-card-1200x630.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="SessionMD Chrome Extension — Crash-Safe Tab Saver &amp; Markdown Workspace" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SessionMD — Crash-Safe Tab Saver &amp; Markdown Workspace" />
+  <meta name="twitter:description" content="Crash-safe rolling auto-snapshots, UTM URL deduplication, Obsidian YAML Markdown, CSV/TSV export &amp; Google NotebookLM bundles. Zero tracking." />
+  <meta name="twitter:url" content="https://lhphong09t2.github.io/sessionmd/" />
+  <meta name="twitter:image" content="https://lhphong09t2.github.io/sessionmd/og-card-1200x630.png" />
+  <meta name="twitter:image:alt" content="SessionMD Chrome Extension — Crash-Safe Tab Saver &amp; Markdown Workspace" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "SessionMD — Crash-Safe Tab Saver & Markdown Workspace",
+        "operatingSystem": "Chrome, Brave, Edge, Arc, Chromium",
+        "applicationCategory": "BrowserApplication",
+        "softwareVersion": "1.0.0",
+        "url": "https://lhphong09t2.github.io/sessionmd/",
+        "image": "https://lhphong09t2.github.io/sessionmd/og-card-1200x630.png",
+        "screenshot": "https://lhphong09t2.github.io/sessionmd/ui-showcase.png",
+        "description": "Local-first Chrome Manifest V3 session manager with crash-safe rolling auto-snapshots, UTM and click-ID URL deduplication, Chrome Tab Group preservation, Obsidian YAML Markdown, formula-guarded CSV/TSV export, and Google NotebookLM source bundles.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "FlowBench Lab",
+          "url": "https://lhphong09t2.github.io/sessionmd/",
+          "email": "lhphong09t2@gmail.com",
+          "sameAs": [
+            "https://www.youtube.com/@FlowBenchLab",
+            "https://www.facebook.com/profile.php?id=61596629317479"
+          ]
+        },
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "SessionMD Free Core",
+            "price": "0",
+            "priceCurrency": "USD",
+            "url": "https://lhphong09t2.github.io/sessionmd/#pricing"
+          },
+          {
+            "@type": "Offer",
+            "name": "SessionMD Pro — Lifetime License",
+            "price": "29.00",
+            "priceCurrency": "USD",
+            "url": "https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why doesn't SessionMD request all-sites, activeTab, or scripting permissions?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "SessionMD uses strictly scoped Chrome Manifest V3 permissions (\"storage\", \"tabs\", \"tabGroups\", \"alarms\") and \"host_permissions\": [\"https://api.polar.sh/*\"] (used solely when an optional Pro license key is activated or revalidated; zero <all_urls> or website host access). It never injects scripts into webpages, never reads webpage DOM contents or cookies, and never uploads your open tabs or URLs to external servers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does empty-window clobber protection prevent lost sessions after a browser crash?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "SessionMD maintains a rolling local ring buffer of up to 12 crash-recovery auto-snapshots every 15 minutes. If Chrome restarts onto a single blank New Tab window, SessionMD detects the empty-window state and refuses to overwrite your previous multi-tab snapshot history."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which tracking parameters are stripped during URL normalization and deduplication?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "SessionMD strips utm_* parameters, fbclid, gclid, dclid, msclkid, mc_cid, mc_eid, igshid, _hsenc, _hsmi, ref_src, URL fragments, trailing slashes, and default ports (:80 and :443) while sorting remaining query keys and merging pinned state and Chrome Tab Group metadata."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the Google NotebookLM Source Packager format multi-workspace research?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "SessionMD Pro collapses duplicate URLs across selected or all saved workspaces, clusters unique sources by domain with workspace provenance labels, and automatically splits large bundles into clean 350,000-character Markdown parts ready for Google NotebookLM upload."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I activate my SESS-XXXX-XXXX-XXXX Pro key and does it work offline?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Open the SessionMD popup in Chrome, select the Pro & Bundles tab, paste your SESS-XXXX-XXXX-XXXX license key from Polar.sh, and click Activate. SessionMD caches validation locally in chrome.storage.local with 12-hour revalidation and a 7-day offline grace window."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1120;
+      --surface: #111a2e;
+      --surface-2: #16223b;
+      --card: #1b2a47;
+      --border: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.28);
+      --border-emerald: rgba(16, 185, 129, 0.44);
+      --text: #f8fafc;
+      --text-soft: #cbd5e1;
+      --muted: #94a3b8;
+      --subtle: #64748b;
+      --accent: #10b981;
+      --accent-hover: #34d399;
+      --accent-cyan: #22d3ee;
+      --accent-ink: #032215;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html {
+      background-color: #0b1120;
+      scroll-behavior: smooth;
+      scroll-padding-top: 84px;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      background-color: #0b1120;
+      background-image:
+        radial-gradient(940px 440px at 50% 0%, rgba(16, 185, 129, 0.13), #0b1120 72%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: var(--accent-hover); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Sticky Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: rgba(11, 17, 32, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 44px;
+    }
+    .brand:hover { text-decoration: none; color: var(--text); }
+    .brand svg { flex-shrink: 0; border-radius: 7px; }
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--muted);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 6px 2px;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 14px;
+      min-height: 44px;
+      border-radius: 9px;
+      background-color: var(--accent);
+      color: var(--accent-ink);
+      font-size: 13.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .nav-cta:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: var(--accent-ink);
+      text-decoration: none;
+    }
+
+    /* Responsive Nav Isolation */
+    .mobile-nav-only { display: none; }
+    .mobile-nav-only summary::-webkit-details-marker { display: none; }
+    summary { list-style: none; }
+
+    .mobile-menu-btn {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background-color: var(--surface);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .mobile-menu-btn:hover { border-color: var(--accent-hover); }
+    .mobile-menu-panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 16px;
+      right: 16px;
+      max-height: calc(100vh - 76px);
+      max-height: calc(100dvh - 76px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background-color: #111a2e;
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-menu-panel a {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      color: var(--text-soft);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .mobile-menu-panel a:hover {
+      background-color: var(--surface-2);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .mobile-menu-panel .mobile-cta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu-panel .btn {
+      width: 100%;
+      justify-content: center;
+      min-height: 44px;
+    }
+
+    @media (max-width: 760px) {
+      .desktop-nav-only { display: none; }
+      .mobile-nav-only { display: block; }
+      .header-inner { padding: 10px 16px; }
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px 72px;
+    }
+    @media (max-width: 420px) {
+      .container { padding: 0 16px 56px; }
+    }
+
+    /* Hero */
+    .hero {
+      padding: 56px 0 48px;
+      text-align: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 13px;
+      border-radius: 999px;
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.34);
+      color: #6ee7b7;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      max-width: 100%;
+    }
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background-color: var(--accent-cyan);
+      flex-shrink: 0;
+    }
+    .hero h1 {
+      margin: 20px auto 18px;
+      max-width: 900px;
+      font-size: clamp(30px, 5vw, 54px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .hero h1 .emerald-accent { color: var(--accent-hover); }
+    .hero h1 .cyan-accent { color: var(--accent-cyan); }
+    .hero-lead {
+      margin: 0 auto 30px;
+      max-width: 740px;
+      font-size: clamp(16px, 2vw, 18.5px);
+      line-height: 1.62;
+      color: var(--muted);
+    }
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .support-ctas { margin-bottom: 0; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 22px;
+      min-height: 48px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+    .btn:hover { text-decoration: none; }
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--accent-ink);
+      border: 1px solid var(--accent);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.22);
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: var(--accent-ink);
+    }
+    .btn-secondary {
+      background-color: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-secondary:hover {
+      background-color: var(--card);
+      border-color: var(--accent-hover);
+      color: var(--text);
+    }
+    .hero-subnote {
+      font-size: 13.5px;
+      color: var(--subtle);
+      margin: 0 0 42px;
+    }
+    .hero-subnote a {
+      color: var(--text-soft);
+      font-weight: 600;
+    }
+    .hero-subnote a:hover { color: var(--accent-hover); }
+
+    @media (max-width: 540px) {
+      .hero { padding: 36px 0 36px; }
+      .hero-ctas { flex-direction: column; align-items: stretch; }
+      .hero-ctas .btn { width: 100%; }
+    }
+
+    /* Framed UI Showcase */
+    .showcase-shell {
+      max-width: 1020px;
+      margin: 0 auto;
+      border-radius: 18px;
+      padding: 10px;
+      background-color: rgba(22, 34, 59, 0.72);
+      border: 1px solid var(--border-strong);
+      box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.58),
+        0 0 0 1px rgba(16, 185, 129, 0.14);
+      text-align: left;
+    }
+    .showcase-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 6px 10px 12px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .window-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .dot-r { background-color: #ef4444; }
+    .dot-y { background-color: #f59e0b; }
+    .dot-g { background-color: #10b981; }
+    .showcase-url {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      color: var(--muted);
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .showcase-status {
+      color: var(--accent-hover);
+      font-weight: 700;
+      font-size: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .showcase-img-wrap {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background-color: var(--bg);
+    }
+    .showcase-img-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    @media (max-width: 560px) {
+      .showcase-status { font-size: 11px; }
+      .showcase-bar { flex-wrap: wrap; }
+    }
+
+    /* Section Headers */
+    .section {
+      padding: 64px 0 0;
+    }
+    .section-head {
+      max-width: 740px;
+      margin-bottom: 28px;
+    }
+    .section-kicker {
+      display: inline-block;
+      color: var(--accent-hover);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section-head h2 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 3.4vw, 34px);
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      color: var(--text);
+    }
+    .section-head p {
+      margin: 0;
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    /* Bento Grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .bento-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+      transition: border-color 0.15s ease;
+    }
+    .bento-card:hover { border-color: var(--border-strong); }
+    .span-7 { grid-column: span 7; }
+    .span-6 { grid-column: span 6; }
+    .span-5 { grid-column: span 5; }
+    .bento-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background-color: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--accent-hover);
+    }
+    .bento-card h3 {
+      margin: 8px 0 8px;
+      font-size: 19px;
+      line-height: 1.28;
+      letter-spacing: -0.015em;
+      color: var(--text);
+    }
+    .bento-card p {
+      margin: 0;
+      font-size: 14.5px;
+      color: var(--muted);
+    }
+    .code-mini {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--text-soft);
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    code {
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-size: 12.5px;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+    @media (max-width: 900px) {
+      .span-7, .span-6, .span-5 { grid-column: span 6; }
+    }
+    @media (max-width: 640px) {
+      .span-7, .span-6, .span-5 { grid-column: span 12; }
+      .bento-card { padding: 20px; }
+    }
+
+    /* Plan Cards + Semantic Comparison Table */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .plan-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      min-width: 0;
+    }
+    .plan-card.pro {
+      background-color: var(--surface-2);
+      border-color: var(--border-emerald);
+      box-shadow: 0 18px 44px rgba(16, 185, 129, 0.09);
+    }
+    .plan-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .plan-name {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .plan-price {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .plan-price span {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .plan-desc {
+      margin: 0 0 14px;
+      font-size: 14.5px;
+      color: var(--muted);
+    }
+    .plan-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text-soft);
+      font-size: 14px;
+      display: grid;
+      gap: 8px;
+    }
+    @media (max-width: 720px) {
+      .plan-grid { grid-template-columns: minmax(0, 1fr); }
+      .plan-card { padding: 20px; }
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background-color: var(--surface);
+    }
+    table.compare-table {
+      width: 100%;
+      min-width: 640px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .compare-table th, .compare-table td {
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .compare-table th {
+      background-color: var(--surface-2);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .compare-table th.pro-col { color: var(--accent-hover); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td { color: var(--text-soft); }
+    .compare-table td.muted-cell { color: var(--muted); }
+    .compare-table td.pro-val { color: #6ee7b7; font-weight: 600; }
+
+    /* 3-Step Activation Guide */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .step-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      min-width: 0;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background-color: rgba(16, 185, 129, 0.14);
+      border: 1px solid var(--border-emerald);
+      color: var(--accent-hover);
+      font-weight: 800;
+      font-size: 13.5px;
+      margin-bottom: 14px;
+    }
+    .step-card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      color: var(--text);
+    }
+    .step-card p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .key-pill {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 10px;
+      border-radius: 7px;
+      background-color: var(--bg);
+      border: 1px solid var(--border-strong);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--accent-hover);
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+    @media (max-width: 840px) {
+      .steps-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    /* FAQ */
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+    .faq-item {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0 20px;
+    }
+    .faq-item summary {
+      cursor: pointer;
+      padding: 18px 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 48px;
+    }
+    .faq-plus {
+      color: var(--accent-hover);
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .faq-body {
+      padding: 14px 0 18px;
+      font-size: 14.5px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* Support Callout */
+    .support-banner {
+      margin-top: 56px;
+      background-color: var(--surface-2);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .support-banner h2 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      color: var(--text);
+    }
+    .support-banner p {
+      margin: 0;
+      font-size: 14.5px;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    /* Unified Footer */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background-color: #080d19;
+      padding: 48px 20px 36px;
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
+      gap: 28px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .footer-brand p {
+      margin: 10px 0 0;
+      font-size: 13.5px;
+      color: var(--muted);
+      max-width: 330px;
+    }
+    .footer-col h3 {
+      margin: 0 0 12px;
+      font-size: 12.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text);
+    }
+    .footer-col ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .footer-col a {
+      color: var(--muted);
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-block;
+      padding: 2px 0;
+    }
+    .footer-col a:hover {
+      color: var(--accent-hover);
+      text-decoration: none;
+    }
+    .footer-bottom {
+      padding-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--subtle);
+    }
+    @media (max-width: 820px) {
+      .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .footer-grid { grid-template-columns: minmax(0, 1fr); }
+      .site-footer { padding: 36px 16px 28px; }
+    }
+    @media (max-width: 760px) {
+      select, textarea, input { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <svg viewBox="0 0 128 128" width="28" height="28" aria-hidden="true">
+          <rect x="0" y="0" width="128" height="128" rx="28" fill="#0B1120"/>
+          <rect x="3" y="3" width="122" height="122" rx="25" fill="none" stroke="#1E293B" stroke-width="2"/>
+          <path d="M22 36 C22 29.373 27.373 24 34 24 H60 C65.523 24 70 28.477 70 34 V40 H22 Z" fill="#10B981"/>
+          <path d="M74 33 C74 28.582 77.582 25 82 25 H96 C101.523 25 106 29.477 106 35 V40 H74 Z" fill="#06B6D4"/>
+          <rect x="20" y="38" width="88" height="68" rx="14" fill="#111C33" stroke="#10B981" stroke-width="4.5"/>
+          <rect x="31" y="51" width="12" height="10" rx="3" fill="#10B981"/>
+          <rect x="48" y="51" width="34" height="10" rx="3" fill="#F8FAFC"/>
+          <rect x="87" y="51" width="10" height="10" rx="3" fill="#22D3EE"/>
+          <rect x="31" y="67" width="12" height="10" rx="3" fill="#06B6D4"/>
+          <rect x="48" y="67" width="49" height="10" rx="3" fill="#CBD5E1"/>
+          <rect x="31" y="83" width="43" height="10" rx="3" fill="#34D399"/>
+          <rect x="79" y="83" width="18" height="10" rx="3" fill="#38BDF8"/>
+        </svg>
+        <span>SessionMD</span>
+      </a>
+
+      <div class="desktop-nav desktop-nav-only">
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#features">Features</a>
+          <a href="./tab-deduper.html">Tab Deduper</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#activate">Activate Key</a>
+          <a href="./privacy.html">Privacy</a>
+        </nav>
+        <a class="nav-cta" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro &mdash; $29</a>
+      </div>
+
+      <details class="mobile-nav-only" id="mobile-nav">
+        <summary class="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="17" x2="20" y2="17" />
+          </svg>
+        </summary>
+        <nav class="mobile-menu-panel" aria-label="Mobile navigation">
+          <a href="#features">Features</a>
+          <a href="./tab-deduper.html">Free Tab URL Deduper</a>
+          <a href="#pricing">Free vs Pro Pricing</a>
+          <a href="#activate">Install &amp; Activate</a>
+          <a href="#faq">Technical FAQ</a>
+          <a href="./privacy.html">Privacy Policy</a>
+          <div class="mobile-cta-group">
+            <a class="btn btn-primary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro Lifetime &mdash; $29</a>
+            <a class="btn btn-secondary" href="./tab-deduper.html">Open Free Tab Deduper</a>
+          </div>
+        </nav>
+      </details>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="eyebrow-dot" aria-hidden="true"></span>
+        <span>Chrome Manifest V3 &middot; Zero Page Scraping &middot; Zero Tracking</span>
+      </div>
+      <h1>Crash-Safe Tab Sessions &amp; <span class="emerald-accent">Markdown Workspaces</span> Ready for <span class="cyan-accent">Obsidian &amp; NotebookLM</span></h1>
+      <p class="hero-lead">Built by <strong>FlowBench Lab</strong>. Protect multi-window research sessions with a 12-snapshot local ring buffer, strip <code>utm_*</code> &amp; click-ID duplicates, preserve Chrome Tab Groups, and export straight to Obsidian YAML Markdown, Google Sheets TSV, RFC 4180 CSV, or Google NotebookLM bundles.</p>
+
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">
+          <span>Unlock SessionMD Pro Lifetime &mdash; $29</span>
+        </a>
+        <a class="btn btn-secondary" href="./tab-deduper.html">
+          <span>Try Free Tab URL Deduper &rarr;</span>
+        </a>
+      </div>
+      <p class="hero-subnote">Free core forever (5 workspaces + 12 crash snapshots) &middot; Works on Chrome, Brave, Arc &amp; Edge &middot; <a href="#pricing">Compare Free vs $29 Pro &darr;</a></p>
+
+      <div class="showcase-shell" aria-label="SessionMD Workspace Capture and Obsidian Markdown Preview">
+        <div class="showcase-bar">
+          <div class="window-dots" aria-hidden="true">
+            <span class="dot-r"></span>
+            <span class="dot-y"></span>
+            <span class="dot-g"></span>
+          </div>
+          <div class="showcase-url">SessionMD v1.0.0 &mdash; Local Chrome Session &amp; Markdown Engine</div>
+          <div class="showcase-status">0 KB Telemetry</div>
+        </div>
+        <div class="showcase-img-wrap">
+          <img src="./ui-showcase.png" alt="SessionMD Chrome extension popup capturing 18 tabs across 4 Tab Groups with UTM deduplication, Obsidian YAML Markdown preview, saved workspaces diff, and Google NotebookLM Source Packager" width="1280" height="800" loading="eager" decoding="async" />
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="section-head">
+        <span class="section-kicker">Architecture &amp; Craft</span>
+        <h2>Built for 100-Tab Researchers, Engineers &amp; Obsidian Vaults</h2>
+        <p>No cloud account walls, no IndexedDB session wipes, and no background DOM scripts &mdash; every snapshot and export runs inside your local browser profile.</p>
+      </div>
+
+      <div class="bento-grid">
+        <article class="bento-card span-7">
+          <div>
+            <span class="bento-badge">Crash-Safe Ring Buffer</span>
+            <h3>12 Rolling Auto-Snapshots with Empty-Window Clobber Protection</h3>
+            <p>SessionMD captures rolling local backups every 15 minutes via <code>chrome.alarms</code>. If Chrome crashes and reopens onto a single blank <code>New Tab</code>, SessionMD blocks empty-window overwrites so your real multi-window session stays recoverable.</p>
+          </div>
+          <pre class="code-mini">snapshot_ring_buffer: 12 slots (chrome.storage.local)
+empty_window_guard:   SKIP_EMPTY_OVERWRITE enabled
+dedupe_fingerprint:   skips identical idle intervals</pre>
+        </article>
+
+        <article class="bento-card span-5">
+          <div>
+            <span class="bento-badge">Least-Privilege MV3</span>
+            <h3>Zero <code>&lt;all_urls&gt;</code> &amp; Zero DOM Scraping</h3>
+            <p>Uses only <code>storage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>, plus <code>https://api.polar.sh/*</code> host access used solely when an optional Pro license key is activated or revalidated &mdash; zero <code>&lt;all_urls&gt;</code> or website host access, zero content scripts, and zero analytics.</p>
+          </div>
+          <pre class="code-mini">"permissions": [
+  "storage", "tabs", "tabGroups", "alarms"
+],
+"host_permissions": ["https://api.polar.sh/*"]</pre>
+        </article>
+
+        <article class="bento-card span-5">
+          <div>
+            <span class="bento-badge">Canonical URL Engine</span>
+            <h3>UTM &amp; Click-ID Deduplication</h3>
+            <p>Strips <code>utm_*</code>, <code>fbclid</code>, <code>gclid</code>, <code>msclkid</code>, <code>mc_cid</code>, fragments, and default ports (<code>:80</code>/<code>:443</code>) while preserving pinned state and Chrome Tab Group titles/colors.</p>
+          </div>
+        </article>
+
+        <article class="bento-card span-7">
+          <div>
+            <span class="bento-badge">SessionMD Pro Workflow</span>
+            <h3>Google NotebookLM Source Packager &amp; Multi-Workspace Digests</h3>
+            <p>Collapse cross-workspace duplicate URLs across dozens of saved research sessions into one deduplicated Markdown digest, or export domain-clustered source packs auto-chunked within <code>350,000</code>-character NotebookLM part budgets.</p>
+          </div>
+        </article>
+
+        <article class="bento-card span-6">
+          <div>
+            <span class="bento-badge">Vault &amp; Spreadsheet Safe</span>
+            <h3>Obsidian YAML Markdown + Formula-Guarded CSV/TSV</h3>
+            <p>Export grouped by Domain, Tab Group, Window, or Flat List with escaped YAML frontmatter (<time datetime="2026-11-22">2026-11-22</time>), or download RFC 4180 CSV &amp; Google Sheets TSV with automatic <code>= + - @</code> formula-injection guarding.</p>
+          </div>
+        </article>
+
+        <article class="bento-card span-6">
+          <div>
+            <span class="bento-badge">Keyboard-First + Web Tool</span>
+            <h3>Instant <code>/</code> Search, Live Diff &amp; Paste Deduper</h3>
+            <p>Press <code>/</code> or <code>Cmd/Ctrl+K</code> to filter tabs and run <code>+added / -removed</code> workspace diffs &mdash; or clean raw URL lists in any browser with our <a href="./tab-deduper.html">Free Tab URL Deduplicator &amp; NotebookLM Formatter</a>.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="pricing" class="section">
+      <div class="section-head">
+        <span class="section-kicker">Simple Lifetime Licensing</span>
+        <h2>Complete Free Core. One-Time $29 Pro Upgrade.</h2>
+        <p>Own your browser workspaces locally forever &mdash; zero monthly subscriptions, zero account sign-ups, and zero telemetry.</p>
+      </div>
+
+      <div class="plan-grid">
+        <div class="plan-card">
+          <div>
+            <div class="plan-top">
+              <span class="plan-name">SessionMD Free</span>
+              <span class="plan-price">$0 <span>forever</span></span>
+            </div>
+            <p class="plan-desc">Crash-safe session recovery, URL deduplication, and single-workspace Markdown/CSV exports.</p>
+            <ul class="plan-list">
+              <li>Up to <strong>5 saved workspaces</strong> (up to 2,000 tabs per workspace)</li>
+              <li><strong>12 rolling crash-safe auto-snapshots</strong> (every 15 minutes)</li>
+              <li>UTM &amp; click-ID URL deduplication + Chrome Tab Group preservation</li>
+              <li>Obsidian YAML + Markdown, RFC 4180 CSV, Google Sheets TSV &amp; JSON backup</li>
+              <li>Instant <code>/</code> keyboard search &amp; live <code>+added / -removed</code> tab diff</li>
+            </ul>
+          </div>
+          <a class="btn btn-secondary" href="#activate">Install Free Core &darr;</a>
+        </div>
+
+        <div class="plan-card pro">
+          <div>
+            <div class="plan-top">
+              <span class="plan-name">SessionMD Pro Lifetime</span>
+              <span class="plan-price">$29 <span>one-time</span></span>
+            </div>
+            <p class="plan-desc">Unlimited saved workspaces, cross-session digests, and NotebookLM source packs via Polar.sh.</p>
+            <ul class="plan-list">
+              <li>Everything in SessionMD Free with <strong>zero recurring fees</strong></li>
+              <li><strong>Unlimited saved workspaces</strong> stored locally on your machine</li>
+              <li><strong>Google NotebookLM Source Packager</strong> (auto-chunked 350k-char <code>.md</code> bundles)</li>
+              <li><strong>Multi-Workspace Deduplicated Digest</strong> &amp; <strong>Batch CSV Export</strong></li>
+              <li>12-hour license revalidation + <strong>7-day offline grace window</strong></li>
+            </ul>
+          </div>
+          <a class="btn btn-primary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro Lifetime &mdash; $29</a>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>SessionMD Free ($0)</th>
+              <th class="pro-col">SessionMD Pro ($29 Once)</th>
+              <th>Privacy &amp; Execution Boundary</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Saved Browser Workspaces</strong></td>
+              <td>Up to 5 saved workspaces</td>
+              <td class="pro-val">Unlimited saved workspaces</td>
+              <td class="muted-cell">Stored locally in <code>chrome.storage.local</code></td>
+            </tr>
+            <tr>
+              <td><strong>Crash-Safe Rolling Auto-Snapshots</strong></td>
+              <td>Up to 12 snapshots (15m alarm)</td>
+              <td class="pro-val">Up to 12 snapshots (15m alarm)</td>
+              <td class="muted-cell">Empty-window clobber protection built in</td>
+            </tr>
+            <tr>
+              <td><strong>Tracking URL Deduplication &amp; Tab Groups</strong></td>
+              <td>Included (<code>utm_*</code>, <code>fbclid</code>, <code>gclid</code>)</td>
+              <td class="pro-val">Included + Cross-Workspace Dedupe</td>
+              <td class="muted-cell">Preserves pinned tabs &amp; Chrome Tab Groups</td>
+            </tr>
+            <tr>
+              <td><strong>Obsidian YAML + Markdown Export</strong></td>
+              <td>By Domain, Tab Group, Window, or Flat</td>
+              <td class="pro-val">Single + Multi-Workspace Digest (<code>.md</code>)</td>
+              <td class="muted-cell">XSS-safe link sanitizer blocks <code>javascript:</code></td>
+            </tr>
+            <tr>
+              <td><strong>Spreadsheet Export (CSV &amp; Sheets TSV)</strong></td>
+              <td>Single workspace RFC 4180 CSV &amp; TSV</td>
+              <td class="pro-val">Single + Batch Selected Workspaces (<code>.csv</code>)</td>
+              <td class="muted-cell">Formula injection guard (<code>= + - @</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Google NotebookLM Source Packager</strong></td>
+              <td class="muted-cell">Single-workspace Markdown</td>
+              <td class="pro-val">Auto-chunked 350k-char Domain Source Packs</td>
+              <td class="muted-cell">Domain-clustered with workspace provenance</td>
+            </tr>
+            <tr>
+              <td><strong>Instant <code>/</code> Search, Diff &amp; JSON Backup</strong></td>
+              <td>Included (<code>+added / -removed</code> diff)</td>
+              <td class="pro-val">Included (<code>+added / -removed</code> diff)</td>
+              <td class="muted-cell">Full offline JSON export &amp; import portability</td>
+            </tr>
+            <tr>
+              <td><strong>Offline Resilience &amp; Network Traffic</strong></td>
+              <td>100% offline (zero network requests)</td>
+              <td class="pro-val">12h revalidation + 7-day offline grace</td>
+              <td class="muted-cell">HTTPS to <code>api.polar.sh</code> only when keyed</td>
+            </tr>
+            <tr>
+              <td><strong>Billing &amp; Ownership Model</strong></td>
+              <td>$0 Free forever</td>
+              <td class="pro-val">$29 one-time lifetime license</td>
+              <td class="muted-cell">Stripe-backed checkout via Polar.sh</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="activate" class="section">
+      <div class="section-head">
+        <span class="section-kicker">Quick Setup &amp; Activation</span>
+        <h2>Unlock SessionMD Pro in 3 Steps (&lt; 30 Seconds)</h2>
+        <p>No cloud account or password required &mdash; activate directly inside the extension popup using your Polar license key.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <h3>Add SessionMD to Chrome</h3>
+          <p>Install SessionMD on Chrome, Brave, Arc, or Edge and pin the workspace icon to your toolbar so open tabs and Tab Groups are always one click away.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <h3>Get Your Polar License Key</h3>
+          <p>Complete the one-time $29 checkout on <a href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Polar.sh (FlowBench Lab)</a> to receive your lifetime key immediately onscreen and by email.</p>
+          <span class="key-pill">SESS-XXXX-XXXX-XXXX</span>
+        </div>
+
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <h3>Paste in Pro &amp; Bundles &rarr; Activate</h3>
+          <p>Open the SessionMD popup, switch to the <strong>Pro &amp; Bundles</strong> tab, paste your <code>SESS-XXXX-XXXX-XXXX</code> key, and click <strong>Activate</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="section-head">
+        <span class="section-kicker">Technical FAQ</span>
+        <h2>Permissions, Crash Snapshots &amp; NotebookLM Details</h2>
+        <p>Straightforward answers for security-conscious engineers, analysts, and knowledge workers.</p>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>
+            <span>Why doesn't SessionMD request <code>&lt;all_urls&gt;</code>, <code>activeTab</code>, or <code>scripting</code> permissions?</span>
+            <span class="faq-plus" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-body">
+            SessionMD manages tab metadata, never webpage contents. Manifest V3 <code>permissions</code> are scoped strictly to <code>storage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>, with <code>"host_permissions": ["https://api.polar.sh/*"]</code> used solely when an optional Pro license key is activated or revalidated (zero <code>&lt;all_urls&gt;</code> or website host access). SessionMD cannot inject scripts, cannot read banking or internal admin DOMs, and never transmits your browsing sessions anywhere.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>How does empty-window clobber protection prevent lost sessions after a browser crash?</span>
+            <span class="faq-plus" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-body">
+            Traditional session savers often overwrite your saved state with a single blank tab when Chrome restarts after an OS reboot or crash. SessionMD maintains a 12-slot rolling ring buffer (<code>sessionmd_crash_snapshots_v1</code>) and automatically skips single-blank-tab auto-backups when your prior snapshot held real multi-tab work.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>Which tracking parameters are stripped during URL normalization and deduplication?</span>
+            <span class="faq-plus" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-body">
+            SessionMD removes <code>utm_*</code>, <code>fbclid</code>, <code>gclid</code>, <code>dclid</code>, <code>msclkid</code>, <code>mc_cid</code>, <code>mc_eid</code>, <code>igshid</code>, <code>_hsenc</code>, <code>_hsmi</code>, and <code>ref_src</code>, drops default <code>:80</code>/<code>:443</code> ports and trailing slashes, sorts retained query keys deterministically, and merges pinned status and Chrome Tab Group labels onto the surviving tab.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>How does the Google NotebookLM Source Packager format multi-workspace research?</span>
+            <span class="faq-plus" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-body">
+            NotebookLM enforces per-notebook source count limits, making raw 200-tab research dumps painful to import. SessionMD Pro deduplicates URLs across your selected workspaces, groups sources under <code>## Domain Cluster</code> headings with workspace provenance tags, and automatically splits massive archives into clean <code>350,000</code>-character Markdown parts.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>How do I activate my <code>SESS-XXXX-XXXX-XXXX</code> Pro key and does it work offline?</span>
+            <span class="faq-plus" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-body">
+            Paste your <code>SESS-XXXX-XXXX-XXXX</code> key inside the <strong>Pro &amp; Bundles</strong> tab in the SessionMD popup and click <strong>Activate</strong>. Free users trigger zero outbound network requests; Pro keys revalidate over HTTPS with <code>api.polar.sh</code> once every 12 hours and include a full <strong>7-day offline grace window</strong> for flights and airgapped travel.
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="support" class="support-banner">
+      <div>
+        <h2>Need License Help, Team Invoicing, or Workflow Support?</h2>
+        <p>Published by <strong>FlowBench Lab</strong>. Email <a href="mailto:lhphong09t2@gmail.com">lhphong09t2@gmail.com</a> for direct engineering support or watch research &amp; Obsidian automation guides on <a href="https://www.youtube.com/@FlowBenchLab" target="_blank" rel="noopener">YouTube (@FlowBenchLab)</a>.</p>
+      </div>
+      <div class="hero-ctas support-ctas">
+        <a class="btn btn-primary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro &mdash; $29</a>
+        <a class="btn btn-secondary" href="mailto:lhphong09t2@gmail.com">Email Support</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="./">
+            <svg viewBox="0 0 128 128" width="26" height="26" aria-hidden="true">
+              <rect x="0" y="0" width="128" height="128" rx="28" fill="#0B1120"/>
+              <rect x="3" y="3" width="122" height="122" rx="25" fill="none" stroke="#1E293B" stroke-width="2"/>
+              <path d="M22 36 C22 29.373 27.373 24 34 24 H60 C65.523 24 70 28.477 70 34 V40 H22 Z" fill="#10B981"/>
+              <path d="M74 33 C74 28.582 77.582 25 82 25 H96 C101.523 25 106 29.477 106 35 V40 H74 Z" fill="#06B6D4"/>
+              <rect x="20" y="38" width="88" height="68" rx="14" fill="#111C33" stroke="#10B981" stroke-width="4.5"/>
+              <rect x="31" y="51" width="12" height="10" rx="3" fill="#10B981"/>
+              <rect x="48" y="51" width="34" height="10" rx="3" fill="#F8FAFC"/>
+              <rect x="87" y="51" width="10" height="10" rx="3" fill="#22D3EE"/>
+              <rect x="31" y="67" width="12" height="10" rx="3" fill="#06B6D4"/>
+              <rect x="48" y="67" width="49" height="10" rx="3" fill="#CBD5E1"/>
+              <rect x="31" y="83" width="43" height="10" rx="3" fill="#34D399"/>
+              <rect x="79" y="83" width="18" height="10" rx="3" fill="#38BDF8"/>
+            </svg>
+            <span>SessionMD</span>
+          </a>
+          <p>Crash-safe Chrome Manifest V3 tab session saver, URL deduplicator, and Obsidian/NotebookLM Markdown workspace by FlowBench Lab.</p>
+        </div>
+
+        <div class="footer-col">
+          <h3>Product</h3>
+          <ul>
+            <li><a href="#features">Core Features</a></li>
+            <li><a href="./tab-deduper.html">Free Tab URL Deduper</a></li>
+            <li><a href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">SessionMD Pro ($29)</a></li>
+            <li><a href="#activate">License Activation</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>Resources &amp; Legal</h3>
+          <ul>
+            <li><a href="#pricing">Free vs Pro Matrix</a></li>
+            <li><a href="#faq">Technical FAQ</a></li>
+            <li><a href="./privacy.html">Privacy Policy</a></li>
+            <li><a href="#support">Support</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>FlowBench Lab</h3>
+          <ul>
+            <li><a href="https://www.youtube.com/@FlowBenchLab" target="_blank" rel="noopener">YouTube (@FlowBenchLab)</a></li>
+            <li><a href="https://www.facebook.com/profile.php?id=61596629317479" target="_blank" rel="noopener">Facebook Page</a></li>
+            <li><a href="mailto:lhphong09t2@gmail.com">lhphong09t2@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.0.0</span>
+        <span>100% Local Session Storage &middot; Zero Page Scraping or Telemetry</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var mobileNav = document.getElementById('mobile-nav');
+      if (!mobileNav) return;
+      var summary = mobileNav.querySelector('summary');
+      mobileNav.addEventListener('click', function (e) {
+        var link = e.target.closest('a');
+        if (link) {
+          mobileNav.removeAttribute('open');
+        }
+      });
+      mobileNav.addEventListener('focusout', function (e) {
+        if (mobileNav.hasAttribute('open') && e.relatedTarget && !mobileNav.contains(e.relatedTarget)) {
+          mobileNav.removeAttribute('open');
+        }
+      });
+      document.addEventListener('click', function (e) {
+        if (mobileNav.hasAttribute('open') && !mobileNav.contains(e.target)) {
+          mobileNav.removeAttribute('open');
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && mobileNav.hasAttribute('open')) {
+          e.preventDefault();
+          mobileNav.removeAttribute('open');
+          if (summary) summary.focus();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
