@@ -1,0 +1,1724 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1120" />
+  <title>Free Tab URL Deduplicator, UTM Stripper &amp; NotebookLM Markdown Formatter — SessionMD</title>
+  <meta name="description" content="Deduplicate browser tab URLs, strip utm_*, fbclid, and gclid tracking parameters, and format OneTab or CSV tab dumps into Google NotebookLM source packs, Obsidian YAML Markdown, or Google Sheets TSV locally." />
+  <link rel="canonical" href="https://lhphong09t2.github.io/sessionmd/tab-deduper.html" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SessionMD by FlowBench Lab" />
+  <meta property="og:title" content="Free Tab URL Deduplicator, UTM Stripper &amp; NotebookLM Formatter — SessionMD" />
+  <meta property="og:description" content="Clean tracking parameters, collapse duplicate browser tabs, and export domain-clustered NotebookLM Markdown, Obsidian YAML notes, or formula-safe CSV/TSV 100% locally in your browser." />
+  <meta property="og:url" content="https://lhphong09t2.github.io/sessionmd/tab-deduper.html" />
+  <meta property="og:image" content="https://lhphong09t2.github.io/sessionmd/og-card-1200x630.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="SessionMD Free Client-Side Tab URL Deduplicator, UTM Stripper &amp; NotebookLM Markdown Formatter" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Tab URL Deduplicator, UTM Stripper &amp; NotebookLM Formatter — SessionMD" />
+  <meta name="twitter:description" content="Strip utm_* &amp; click-IDs, deduplicate tab dumps, and generate domain-clustered Google NotebookLM or Obsidian YAML Markdown locally." />
+  <meta name="twitter:url" content="https://lhphong09t2.github.io/sessionmd/tab-deduper.html" />
+  <meta name="twitter:image" content="https://lhphong09t2.github.io/sessionmd/og-card-1200x630.png" />
+  <meta name="twitter:image:alt" content="SessionMD Free Client-Side Tab URL Deduplicator, UTM Stripper &amp; NotebookLM Markdown Formatter" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SessionMD Tab URL Deduplicator, UTM Stripper & NotebookLM Markdown Formatter",
+    "url": "https://lhphong09t2.github.io/sessionmd/tab-deduper.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any (Client-Side Browser)",
+    "image": "https://lhphong09t2.github.io/sessionmd/og-card-1200x630.png",
+    "description": "100% client-side utility that strips UTM and click-ID tracking parameters, collapses duplicate browser tab URLs, and formats raw URL lists, OneTab dumps, or CSV exports into Google NotebookLM source packs, Obsidian YAML Markdown, Google Sheets TSV, or RFC 4180 CSV.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "FlowBench Lab",
+      "url": "https://lhphong09t2.github.io/sessionmd/",
+      "email": "lhphong09t2@gmail.com",
+      "sameAs": [
+        "https://www.youtube.com/@FlowBenchLab",
+        "https://www.facebook.com/profile.php?id=61596629317479"
+      ]
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1120;
+      --surface: #111a2e;
+      --surface-2: #16223b;
+      --card: #1b2a47;
+      --border: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.28);
+      --border-emerald: rgba(16, 185, 129, 0.44);
+      --text: #f8fafc;
+      --text-soft: #cbd5e1;
+      --muted: #94a3b8;
+      --subtle: #64748b;
+      --accent: #10b981;
+      --accent-hover: #34d399;
+      --accent-cyan: #22d3ee;
+      --accent-ink: #032215;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html {
+      background-color: #0b1120;
+      scroll-behavior: smooth;
+      scroll-padding-top: 84px;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      background-color: #0b1120;
+      background-image:
+        radial-gradient(900px 380px at 50% 0%, rgba(16, 185, 129, 0.12), #0b1120 72%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: var(--accent-hover); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Sticky Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: rgba(11, 17, 32, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 44px;
+    }
+    .brand:hover { text-decoration: none; color: var(--text); }
+    .brand svg { flex-shrink: 0; border-radius: 7px; }
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--muted);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 6px 2px;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 14px;
+      min-height: 44px;
+      border-radius: 9px;
+      background-color: var(--accent);
+      color: var(--accent-ink);
+      font-size: 13.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .nav-cta:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: var(--accent-ink);
+      text-decoration: none;
+    }
+
+    /* Responsive Nav Isolation */
+    .mobile-nav-only { display: none; }
+    .mobile-nav-only summary::-webkit-details-marker { display: none; }
+    summary { list-style: none; }
+
+    .mobile-menu-btn {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background-color: var(--surface);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .mobile-menu-btn:hover { border-color: var(--accent-hover); }
+    .mobile-menu-panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 16px;
+      right: 16px;
+      max-height: calc(100vh - 76px);
+      max-height: calc(100dvh - 76px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background-color: #111a2e;
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-menu-panel a {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      color: var(--text-soft);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .mobile-menu-panel a:hover {
+      background-color: var(--surface-2);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .mobile-menu-panel .mobile-cta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu-panel .btn {
+      width: 100%;
+      justify-content: center;
+      min-height: 44px;
+    }
+
+    @media (max-width: 760px) {
+      .desktop-nav-only { display: none; }
+      .mobile-nav-only { display: block; }
+      .header-inner { padding: 10px 16px; }
+    }
+
+    /* Main Container */
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 20px 68px;
+    }
+    @media (max-width: 420px) {
+      .wrap { padding: 28px 16px 52px; }
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.34);
+      padding: 5px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: clamp(27px, 4.2vw, 42px);
+      line-height: 1.13;
+      margin: 16px 0 12px;
+      letter-spacing: -0.025em;
+      font-weight: 800;
+    }
+    .lead {
+      font-size: 16.5px;
+      color: var(--muted);
+      max-width: 820px;
+      margin: 0 0 28px;
+    }
+    .lead code {
+      background-color: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-size: 14px;
+      color: var(--text-soft);
+    }
+
+    /* Interactive Tool Shell */
+    .tool-shell {
+      background-color: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 40px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.38);
+    }
+    @media (max-width: 520px) {
+      .tool-shell { padding: 16px; }
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      min-width: 0;
+    }
+    button, .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 10px 15px;
+      min-height: 44px;
+      border-radius: 9px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 13.5px;
+      border: 1px solid var(--border);
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .btn:hover { text-decoration: none; }
+    button.primary, .btn.primary {
+      background-color: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+    button.primary:hover, .btn.primary:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: var(--accent-ink);
+    }
+    button.secondary, .btn.secondary {
+      background-color: var(--surface-2);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+    button.secondary:hover, .btn.secondary:hover {
+      background-color: var(--card);
+      border-color: var(--accent-hover);
+      color: var(--text);
+    }
+    button.tab {
+      background-color: var(--bg);
+      color: var(--muted);
+      border-color: var(--border);
+      padding: 10px 13px;
+      min-height: 44px;
+      font-size: 13px;
+    }
+    button.tab:hover { color: var(--text); border-color: var(--border-strong); }
+    button.tab.active {
+      background-color: rgba(16, 185, 129, 0.14);
+      color: var(--accent-hover);
+      border-color: var(--accent);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 13.5px;
+      color: var(--text-soft);
+    }
+    .controls label {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      min-height: 44px;
+      cursor: pointer;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .controls input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .title-input {
+      background-color: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 8px 12px;
+      min-height: 44px;
+      font-size: 13.5px;
+      font-family: inherit;
+      width: 230px;
+      max-width: 100%;
+    }
+    select {
+      background-color: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 8px 12px;
+      min-height: 44px;
+      font-size: 13.5px;
+      font-family: inherit;
+      max-width: 100%;
+    }
+    .panes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 760px) {
+      .panes { grid-template-columns: minmax(0, 1fr); }
+      .title-input { width: 100%; }
+    }
+    .pane {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+    .pane-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-hover);
+      min-height: 40px;
+    }
+    #detected-badge {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    textarea {
+      width: 100%;
+      min-height: 290px;
+      resize: vertical;
+      background-color: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 11px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    textarea:focus, select:focus, .title-input:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .status-msg {
+      color: var(--accent-hover);
+      font-weight: 600;
+      min-height: 20px;
+    }
+
+    /* Reference Benchmark Matrix and Extension CTA */
+    .section-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 520px) {
+      .section-card { padding: 18px; }
+    }
+    .section-card h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .section-card p.sub {
+      margin: 0 0 18px;
+      font-size: 14.5px;
+      color: var(--muted);
+    }
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      font-size: 14px;
+      background-color: var(--bg);
+    }
+    th, td {
+      text-align: left;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th {
+      background-color: var(--surface-2);
+      color: var(--accent-hover);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+    tr:last-child td { border-bottom: none; }
+    td { color: var(--text-soft); }
+    code {
+      background-color: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .cta-box {
+      background-color: var(--surface-2);
+      border: 1px solid var(--border-emerald);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 18px 44px rgba(16, 185, 129, 0.08);
+    }
+    @media (max-width: 520px) {
+      .cta-box { padding: 20px; }
+    }
+    .cta-box h2 {
+      margin: 0 0 8px;
+      font-size: 23px;
+      letter-spacing: -0.02em;
+    }
+    .cta-box p {
+      margin: 0 0 18px;
+      color: var(--text-soft);
+      font-size: 15px;
+      max-width: 800px;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    @media (max-width: 520px) {
+      .cta-row { flex-direction: column; }
+      .cta-row .btn { width: 100%; min-height: 46px; }
+    }
+
+    /* Unified Footer */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background-color: #080d19;
+      padding: 48px 20px 36px;
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
+      gap: 28px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .footer-brand p {
+      margin: 10px 0 0;
+      font-size: 13.5px;
+      color: var(--muted);
+      max-width: 330px;
+    }
+    .footer-col h3 {
+      margin: 0 0 12px;
+      font-size: 12.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text);
+    }
+    .footer-col ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .footer-col a {
+      color: var(--muted);
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-block;
+      padding: 2px 0;
+    }
+    .footer-col a:hover {
+      color: var(--accent-hover);
+      text-decoration: none;
+    }
+    .footer-bottom {
+      padding-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--subtle);
+    }
+    @media (max-width: 820px) {
+      .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .footer-grid { grid-template-columns: minmax(0, 1fr); }
+      .site-footer { padding: 36px 16px 28px; }
+    }
+    @media (max-width: 760px) {
+      select, textarea, input, .title-input { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <svg viewBox="0 0 128 128" width="28" height="28" aria-hidden="true">
+          <rect x="0" y="0" width="128" height="128" rx="28" fill="#0B1120"/>
+          <rect x="3" y="3" width="122" height="122" rx="25" fill="none" stroke="#1E293B" stroke-width="2"/>
+          <path d="M22 36 C22 29.373 27.373 24 34 24 H60 C65.523 24 70 28.477 70 34 V40 H22 Z" fill="#10B981"/>
+          <path d="M74 33 C74 28.582 77.582 25 82 25 H96 C101.523 25 106 29.477 106 35 V40 H74 Z" fill="#06B6D4"/>
+          <rect x="20" y="38" width="88" height="68" rx="14" fill="#111C33" stroke="#10B981" stroke-width="4.5"/>
+          <rect x="31" y="51" width="12" height="10" rx="3" fill="#10B981"/>
+          <rect x="48" y="51" width="34" height="10" rx="3" fill="#F8FAFC"/>
+          <rect x="87" y="51" width="10" height="10" rx="3" fill="#22D3EE"/>
+          <rect x="31" y="67" width="12" height="10" rx="3" fill="#06B6D4"/>
+          <rect x="48" y="67" width="49" height="10" rx="3" fill="#CBD5E1"/>
+          <rect x="31" y="83" width="43" height="10" rx="3" fill="#34D399"/>
+          <rect x="79" y="83" width="18" height="10" rx="3" fill="#38BDF8"/>
+        </svg>
+        <span>SessionMD</span>
+      </a>
+
+      <div class="desktop-nav desktop-nav-only">
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="./">Overview</a>
+          <a class="active" href="./tab-deduper.html">Tab Deduper</a>
+          <a href="./#pricing">Pricing</a>
+          <a href="./#activate">Activate Key</a>
+          <a href="./privacy.html">Privacy</a>
+        </nav>
+        <a class="nav-cta" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro &mdash; $29</a>
+      </div>
+
+      <details class="mobile-nav-only" id="mobile-nav">
+        <summary class="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="17" x2="20" y2="17" />
+          </svg>
+        </summary>
+        <nav class="mobile-menu-panel" aria-label="Mobile navigation">
+          <a href="./">Overview</a>
+          <a href="./tab-deduper.html">Free Tab URL Deduper</a>
+          <a href="#benchmark-matrix">Deduplication Benchmarks</a>
+          <a href="./#pricing">Free vs Pro Pricing</a>
+          <a href="./privacy.html">Privacy Policy</a>
+          <div class="mobile-cta-group">
+            <a class="btn primary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro Lifetime &mdash; $29</a>
+            <a class="btn secondary" href="./">Explore SessionMD Overview</a>
+          </div>
+        </nav>
+      </details>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <span class="pill">100% CLIENT-SIDE &middot; ZERO SERVER UPLOAD</span>
+    <h1>Free Tab URL Deduplicator, UTM Stripper &amp; NotebookLM Formatter</h1>
+    <p class="lead">Paste raw browser URLs, OneTab <code>URL | Title</code> exports, Markdown link lists, or CSV tab dumps to strip <code>utm_*</code> / <code>fbclid</code> / <code>gclid</code> noise, collapse duplicates, and format clean Google NotebookLM source packs, Obsidian YAML Markdown, or formula-guarded CSV/TSV locally.</p>
+
+    <section class="tool-shell" aria-label="Interactive Tab URL Deduplicator and Formatter">
+      <form id="tab-deduper-form" onsubmit="return false;">
+        <div class="toolbar">
+          <div class="btn-group">
+            <button type="button" class="secondary" id="sample-research-btn">Sample Research Tabs</button>
+            <button type="button" class="secondary" id="sample-onetab-btn">Sample OneTab List</button>
+            <button type="button" class="secondary" id="sample-csv-btn">Sample CSV</button>
+            <button type="button" class="secondary" id="clear-btn">Clear</button>
+          </div>
+          <div class="btn-group" role="group" aria-label="Output format">
+            <button type="button" class="tab active" data-format="notebooklm" aria-pressed="true">NotebookLM Pack</button>
+            <button type="button" class="tab" data-format="obsidian" aria-pressed="false">Obsidian YAML</button>
+            <button type="button" class="tab" data-format="urls" aria-pressed="false">Clean URLs</button>
+            <button type="button" class="tab" data-format="tsv" aria-pressed="false">Sheets TSV</button>
+            <button type="button" class="tab" data-format="csv" aria-pressed="false">Clean CSV</button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <label>
+            <span>Bundle Title:</span>
+            <input type="text" class="title-input" id="bundle-title" value="Q4 Systems &amp; Cloud Research" aria-label="Workspace or NotebookLM bundle title" />
+          </label>
+          <label>
+            <span>Input Mode:</span>
+            <select id="input-mode" aria-label="Input format">
+              <option value="auto">Auto-detect</option>
+              <option value="lines">URL / OneTab / Markdown Lines</option>
+              <option value="csv">CSV Tab Export</option>
+              <option value="tsv">TSV Tab Export</option>
+              <option value="json">JSON Tab Array</option>
+            </select>
+          </label>
+          <label>
+            <span>Grouping:</span>
+            <select id="group-mode" aria-label="Markdown grouping mode">
+              <option value="domain">By Domain Cluster</option>
+              <option value="flat">Flat Sequence</option>
+            </select>
+          </label>
+          <label><input type="checkbox" id="opt-strip-utm" checked /> Strip <code>utm_*</code> &amp; click IDs</label>
+          <label><input type="checkbox" id="opt-dedupe" checked /> Deduplicate URLs</label>
+          <label><input type="checkbox" id="opt-strip-hash" checked /> Strip <code>#fragment</code> anchors</label>
+          <label><input type="checkbox" id="opt-sort-query" checked /> Sort query keys &amp; trim <code>/</code></label>
+          <label><input type="checkbox" id="opt-escape-formulas" checked /> Guard formulas (<code>= + - @</code>)</label>
+        </div>
+
+        <div class="panes">
+          <div class="pane">
+            <div class="pane-head">
+              <label for="raw-input">Source Tab List (URLs, OneTab, Markdown, CSV, or JSON)</label>
+              <span id="detected-badge">Detected: URL / Markdown Lines</span>
+            </div>
+            <textarea id="raw-input" spellcheck="false" placeholder="Paste browser URLs, OneTab lines (https://... | Title), Markdown bullets, or CSV rows here..."></textarea>
+          </div>
+
+          <div class="pane">
+            <div class="pane-head">
+              <label for="clean-output" id="output-label">NotebookLM Source Pack (.md)</label>
+              <div class="btn-group">
+                <button type="button" class="primary" id="copy-btn">Copy Output</button>
+                <button type="button" class="secondary" id="download-btn">Download</button>
+              </div>
+            </div>
+            <textarea id="clean-output" readonly spellcheck="false" aria-live="polite"></textarea>
+          </div>
+        </div>
+
+        <div class="meta-bar">
+          <output id="stats-output" for="raw-input bundle-title input-mode group-mode opt-strip-utm opt-dedupe opt-strip-hash opt-sort-query opt-escape-formulas">0 input items &middot; 0 unique URLs &middot; 0 duplicates removed</output>
+          <span class="status-msg" id="status-msg"></span>
+        </div>
+      </form>
+    </section>
+
+    <section id="benchmark-matrix" class="section-card">
+      <h2>URL Tracking Noise, Deduplication &amp; Knowledge-Base Ingestion Benchmarks</h2>
+      <p class="sub">Measured query-string bloat, canonicalization rules, and target format fit across common engineering and research tab dumps (<time datetime="2026-11-22">updated 2026-11-22</time>).</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Source / Workflow Pattern</th>
+              <th>Typical Query &amp; Fragment Noise</th>
+              <th>Canonical Normalization Rule</th>
+              <th>Measured Bloat Reduction</th>
+              <th>Recommended Export Target</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Newsletter &amp; Digest Links</strong></td>
+              <td><code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>mc_cid</code>, <code>mc_eid</code>, <code>_hsenc</code> (110&ndash;240 extra chars/URL)</td>
+              <td>Strip marketing parameters, lowercase hostname, and sort functional query keys alphabetically</td>
+              <td>38% &ndash; 54% shorter URLs; 1.4x duplicate collapse</td>
+              <td>Obsidian YAML Markdown (<code>.md</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Paid Search &amp; Social Click IDs</strong></td>
+              <td><code>gclid</code>, <code>dclid</code>, <code>fbclid</code>, <code>msclkid</code>, <code>igshid</code> (65&ndash;180 random token chars/URL)</td>
+              <td>Remove per-click ad tokens so identical articles opened across sessions hash to 1 canonical URL</td>
+              <td>42% &ndash; 61% shorter URLs; eliminates per-click splits</td>
+              <td>NotebookLM Source Pack (<code>.md</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Developer Docs &amp; API Specs</strong></td>
+              <td>In-page <code>#heading</code> anchors, explicit <code>:443</code> default ports, and trailing <code>/</code> variants</td>
+              <td>Strip <code>#fragment</code> anchors, drop default <code>:80</code>/<code>:443</code> ports, and trim trailing pathname slashes</td>
+              <td>25% &ndash; 47% tab reduction on multi-section docs</td>
+              <td>NotebookLM Source Pack (<code>.md</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>OneTab <code>URL | Title</code> Dumps</strong></td>
+              <td>Unsorted flat text dumps (500&ndash;2,000 lines) with repeated domains and unescaped <code>[</code> <code>]</code> brackets</td>
+              <td>Parse <code>URL | Title</code> pairs, escape literal Markdown brackets, and cluster under <code>## Domain</code> headings</td>
+              <td>31% &ndash; 49% line reduction on multi-week dumps</td>
+              <td>Obsidian YAML Markdown (<code>.md</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Google NotebookLM Bundles</strong></td>
+              <td>50-source cap per notebook; ungrouped raw link lists waste source slots and dilute context</td>
+              <td>Merge cross-session duplicates into <code>&lt;= 350,000</code>-char domain-clustered Markdown source packs</td>
+              <td>Consolidates 200+ tabs into 1 structured source slot</td>
+              <td>NotebookLM Source Pack (<code>.md</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Google Sheets &amp; BI CSV Audits</strong></td>
+              <td>Leading <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code> in scraped page titles trigger formula execution; commas split cells</td>
+              <td>Prefix non-numeric formula triggers with <code>'</code> while keeping signed numbers (<code>-42.50</code>) intact in RFC 4180 CSV</td>
+              <td>100% formula-safe rows across Excel &amp; Google Sheets</td>
+              <td>Sheets TSV / Clean CSV</td>
+            </tr>
+            <tr>
+              <td><strong>Multi-Window Crash Recovery</strong></td>
+              <td>Duplicate pinned tabs across 3&ndash;6 Chrome windows plus blank <code>about:blank</code> / <code>chrome://newtab</code> noise</td>
+              <td>Filter blank internal tabs and merge pinned + Chrome Tab Group metadata onto the surviving URL</td>
+              <td>20% &ndash; 36% cleaner workspace snapshots</td>
+              <td>SessionMD Chrome Extension</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="cta-box">
+      <h2>Stop Copying Tab URLs by Hand &mdash; Automate Crash-Safe Workspaces in Chrome</h2>
+      <p>The <strong>SessionMD</strong> Chrome extension saves open windows and Chrome Tab Groups automatically with a 12-snapshot local crash-recovery ring buffer and zero <code>&lt;all_urls&gt;</code> permissions. Upgrade to <strong>SessionMD Pro ($29 one-time)</strong> for unlimited saved workspaces, cross-workspace deduplicated digests, and auto-chunked 350k-character Google NotebookLM source packs.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock SessionMD Pro Lifetime &mdash; $29</a>
+        <a class="btn secondary" href="./">Explore SessionMD Extension Overview</a>
+        <a class="btn secondary" href="./#pricing">Compare Free vs Pro</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="./">
+            <svg viewBox="0 0 128 128" width="26" height="26" aria-hidden="true">
+              <rect x="0" y="0" width="128" height="128" rx="28" fill="#0B1120"/>
+              <rect x="3" y="3" width="122" height="122" rx="25" fill="none" stroke="#1E293B" stroke-width="2"/>
+              <path d="M22 36 C22 29.373 27.373 24 34 24 H60 C65.523 24 70 28.477 70 34 V40 H22 Z" fill="#10B981"/>
+              <path d="M74 33 C74 28.582 77.582 25 82 25 H96 C101.523 25 106 29.477 106 35 V40 H74 Z" fill="#06B6D4"/>
+              <rect x="20" y="38" width="88" height="68" rx="14" fill="#111C33" stroke="#10B981" stroke-width="4.5"/>
+              <rect x="31" y="51" width="12" height="10" rx="3" fill="#10B981"/>
+              <rect x="48" y="51" width="34" height="10" rx="3" fill="#F8FAFC"/>
+              <rect x="87" y="51" width="10" height="10" rx="3" fill="#22D3EE"/>
+              <rect x="31" y="67" width="12" height="10" rx="3" fill="#06B6D4"/>
+              <rect x="48" y="67" width="49" height="10" rx="3" fill="#CBD5E1"/>
+              <rect x="31" y="83" width="43" height="10" rx="3" fill="#34D399"/>
+              <rect x="79" y="83" width="18" height="10" rx="3" fill="#38BDF8"/>
+            </svg>
+            <span>SessionMD</span>
+          </a>
+          <p>Crash-safe Chrome Manifest V3 tab session saver, URL deduplicator, and Obsidian/NotebookLM Markdown workspace by FlowBench Lab.</p>
+        </div>
+
+        <div class="footer-col">
+          <h3>Product</h3>
+          <ul>
+            <li><a href="./">Overview</a></li>
+            <li><a href="./tab-deduper.html">Free Tab URL Deduper</a></li>
+            <li><a href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">SessionMD Pro ($29)</a></li>
+            <li><a href="./#activate">License Activation</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>Resources &amp; Legal</h3>
+          <ul>
+            <li><a href="./#pricing">Free vs Pro Matrix</a></li>
+            <li><a href="./#faq">Technical FAQ</a></li>
+            <li><a href="./privacy.html">Privacy Policy</a></li>
+            <li><a href="./#support">Support</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>FlowBench Lab</h3>
+          <ul>
+            <li><a href="https://www.youtube.com/@FlowBenchLab" target="_blank" rel="noopener">YouTube (@FlowBenchLab)</a></li>
+            <li><a href="https://www.facebook.com/profile.php?id=61596629317479" target="_blank" rel="noopener">Facebook Page</a></li>
+            <li><a href="mailto:lhphong09t2@gmail.com">lhphong09t2@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.0.0</span>
+        <span>100% Client-Side Execution &middot; Zero Server Upload</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var mobileNav = document.getElementById('mobile-nav');
+      if (mobileNav) {
+        var mobileSummary = mobileNav.querySelector('summary');
+        mobileNav.addEventListener('click', function (e) {
+          var link = e.target.closest('a');
+          if (link) {
+            mobileNav.removeAttribute('open');
+          }
+        });
+        mobileNav.addEventListener('focusout', function (e) {
+          if (mobileNav.hasAttribute('open') && e.relatedTarget && !mobileNav.contains(e.relatedTarget)) {
+            mobileNav.removeAttribute('open');
+          }
+        });
+        document.addEventListener('click', function (e) {
+          if (mobileNav.hasAttribute('open') && !mobileNav.contains(e.target)) {
+            mobileNav.removeAttribute('open');
+          }
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && mobileNav.hasAttribute('open')) {
+            e.preventDefault();
+            mobileNav.removeAttribute('open');
+            if (mobileSummary) mobileSummary.focus();
+          }
+        });
+      }
+
+      var TRACKING_PARAM_SET = new Set([
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'utm_term',
+        'utm_content',
+        'utm_id',
+        'fbclid',
+        'gclid',
+        'dclid',
+        'msclkid',
+        'mc_cid',
+        'mc_eid',
+        'igshid',
+        '_hsenc',
+        '_hsmi',
+        'ref_src'
+      ]);
+
+      var NOTEBOOKLM_BUDGET_CHARS = 350000;
+
+      var SAMPLE_RESEARCH = [
+        '- [PostgreSQL 17 MVCC & WAL Concurrency](https://www.postgresql.org/docs/current/mvcc.html?utm_source=weekly_digest&utm_medium=email&utm_campaign=db_q4#mvcc-intro)',
+        'https://www.postgresql.org:443/docs/current/mvcc.html/?fbclid=IwAR29x8KpL90zQ',
+        '- [Chrome Manifest V3 TabGroups API Reference](https://developer.chrome.com/docs/extensions/reference/api/tabGroups?gclid=Cj0KCQiA88a5BhDP)',
+        'https://developer.chrome.com/docs/extensions/reference/api/tabGroups#method-query',
+        '- [Chrome Storage Local Quota & Ring Buffers](https://developer.chrome.com/docs/extensions/reference/api/storage?utm_source=blog&msclkid=89ac41f0)',
+        '- [Cloudflare Durable Objects SQLite Storage](https://developers.cloudflare.com/durable-objects/best-practices/access-durable-objects-storage/?utm_campaign=workers_launch&mc_cid=7f31b9e2)',
+        'https://developers.cloudflare.com/durable-objects/best-practices/access-durable-objects-storage/#sqlite-backed-objects',
+        '- [SQLite Write-Ahead Logging Specification](https://www.sqlite.org/wal.html?utm_source=hn&igshid=MzRlODBiNWFlZA)',
+        '- [RFC 4180 Common Format and MIME Type for CSV](https://datatracker.ietf.org/doc/html/rfc4180/?_hsenc=p2ANqtz-99x1)'
+      ].join('\n');
+
+      var SAMPLE_ONETAB = [
+        'https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers?utm_source=devtools | Migrate to a Service Worker (MV3)',
+        'https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers#alarms | Migrate to a Service Worker - Alarms',
+        'https://obsidian.md/help/properties?fbclid=IwAR77c21k | Properties & YAML Frontmatter - Obsidian Help',
+        'https://www.postgresql.org/docs/current/indexes-types.html?gclid=EAIaIQobChMI | PostgreSQL Index Types [B-Tree, GIN & GiST]',
+        'https://www.postgresql.org/docs/current/indexes-types.html/ | PostgreSQL Index Types'
+      ].join('\n');
+
+      var SAMPLE_CSV = [
+        'Workspace,Title,URL,TabGroup',
+        '"Storage Engines","SQLite Query Planner","https://www.sqlite.org/optoverview.html?utm_source=csv_export&utm_medium=referral","Databases"',
+        '"Storage Engines","SQLite Query Planner (Duplicate)","https://www.sqlite.org/optoverview.html#table_order","Databases"',
+        '"Browser APIs","=IMPORTXML(""https://example.com"",""//a"")","https://developer.chrome.com/docs/extensions/reference/api/alarms?fbclid=IwAR11z","MV3 Core"',
+        '"Browser APIs","Signed Metric -42.50ms Latency Study","https://web.dev/articles/inp?utm_campaign=perf_audit","Performance"'
+      ].join('\n');
+
+      var rawInputEl = document.getElementById('raw-input');
+      var cleanOutputEl = document.getElementById('clean-output');
+      var bundleTitleEl = document.getElementById('bundle-title');
+      var inputModeEl = document.getElementById('input-mode');
+      var groupModeEl = document.getElementById('group-mode');
+      var optStripUtmEl = document.getElementById('opt-strip-utm');
+      var optDedupeEl = document.getElementById('opt-dedupe');
+      var optStripHashEl = document.getElementById('opt-strip-hash');
+      var optSortQueryEl = document.getElementById('opt-sort-query');
+      var optEscapeFormulasEl = document.getElementById('opt-escape-formulas');
+      var detectedBadgeEl = document.getElementById('detected-badge');
+      var outputLabelEl = document.getElementById('output-label');
+      var statsOutputEl = document.getElementById('stats-output');
+      var statusMsgEl = document.getElementById('status-msg');
+      var tabBtns = Array.from(document.querySelectorAll('button.tab'));
+
+      var activeFormat = 'notebooklm';
+      var currentOutputs = { notebooklm: '', obsidian: '', urls: '', tsv: '', csv: '' };
+      var statusTimer = null;
+
+      function setStatus(msg) {
+        statusMsgEl.textContent = msg;
+        if (statusTimer) clearTimeout(statusTimer);
+        if (msg) {
+          statusTimer = setTimeout(function () {
+            statusMsgEl.textContent = '';
+          }, 2600);
+        }
+      }
+
+      function collapseWs(str) {
+        return String(str == null ? '' : str)
+          .replace(/\u00a0/g, ' ')
+          .replace(/[ \t\r\n]+/g, ' ')
+          .trim();
+      }
+
+      function stripBom(str) {
+        return str && str.charCodeAt(0) === 65279 ? str.slice(1) : str;
+      }
+
+      function isSafeWebUrl(rawUrl) {
+        var cleaned = String(rawUrl == null ? '' : rawUrl).replace(/[\u0000-\u001f\u007f]+/g, '').trim();
+        if (!cleaned) return false;
+        var probe = cleaned.replace(/[\s\u00a0]+/g, '');
+        if (/^(?:javascript|data|vbscript):/i.test(probe)) return false;
+        try {
+          var parsed = new URL(cleaned);
+          return /^(?:https?|file):$/i.test(parsed.protocol);
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function detectInputFormat(raw) {
+        var s = stripBom(raw).trim();
+        if (!s) return 'lines';
+        if ((s.charAt(0) === '[' || s.charAt(0) === '{') && /"url"\s*:/i.test(s)) {
+          return 'json';
+        }
+        var sampleLines = s.split(/\r\n|\n|\r/).filter(Boolean).slice(0, 6);
+        if (sampleLines.length >= 1 && sampleLines[0].indexOf('\t') !== -1) {
+          return 'tsv';
+        }
+        var firstLine = sampleLines[0] || '';
+        if (
+          sampleLines.length >= 2 &&
+          firstLine.indexOf(',') !== -1 &&
+          !/^[-*]\s*\[/.test(firstLine) &&
+          !/^https?:\/\//i.test(firstLine)
+        ) {
+          return 'csv';
+        }
+        return 'lines';
+      }
+
+      function parseDelimited(raw, delimiter) {
+        var text = stripBom(raw);
+        if (!text.trim()) return [];
+        var rows = [];
+        var row = [];
+        var field = '';
+        var inQuotes = false;
+
+        for (var i = 0; i < text.length; i++) {
+          var ch = text[i];
+          if (inQuotes) {
+            if (ch === '"') {
+              if (text[i + 1] === '"') {
+                field += '"';
+                i++;
+              } else {
+                inQuotes = false;
+              }
+            } else {
+              field += ch;
+            }
+          } else if (ch === '"' && field.trim().length === 0) {
+            field = '';
+            inQuotes = true;
+          } else if (ch === delimiter) {
+            row.push(field);
+            field = '';
+          } else if (ch === '\r') {
+            if (text[i + 1] === '\n') i++;
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = '';
+          } else if (ch === '\n') {
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = '';
+          } else {
+            field += ch;
+          }
+        }
+        if (field.length > 0 || row.length > 0) {
+          row.push(field);
+          rows.push(row);
+        }
+        return rows.filter(function (r) {
+          return r.some(function (c) { return c.trim().length > 0; });
+        });
+      }
+
+      function parseDelimitedTabs(raw, delimiter) {
+        var grid = parseDelimited(raw, delimiter);
+        if (grid.length === 0) return [];
+        var header = grid[0].map(function (h) { return collapseWs(h).toLowerCase(); });
+        var urlCol = header.findIndex(function (h) { return h === 'url' || h === 'href' || h === 'link'; });
+        var titleCol = header.findIndex(function (h) { return h === 'title' || h === 'name' || h === 'page'; });
+        var groupCol = header.findIndex(function (h) { return h === 'tabgroup' || h === 'group' || h === 'category'; });
+        var wsCol = header.findIndex(function (h) { return h === 'workspace' || h === 'session'; });
+        var startRow = urlCol !== -1 ? 1 : 0;
+        var items = [];
+
+        for (var r = startRow; r < grid.length; r++) {
+          var cells = grid[r];
+          var rawUrl = '';
+          var rawTitle = '';
+          if (urlCol !== -1 && cells[urlCol]) {
+            rawUrl = cells[urlCol].trim();
+            rawTitle = titleCol !== -1 && cells[titleCol] ? cells[titleCol].trim() : '';
+          } else {
+            var foundIdx = cells.findIndex(function (c) { return isSafeWebUrl(c); });
+            if (foundIdx !== -1) {
+              rawUrl = cells[foundIdx].trim();
+              for (var cIdx = 0; cIdx < cells.length; cIdx++) {
+                if (cIdx !== foundIdx && cells[cIdx].trim()) {
+                  rawTitle = cells[cIdx].trim();
+                  break;
+                }
+              }
+            }
+          }
+          if (isSafeWebUrl(rawUrl)) {
+            items.push({
+              url: rawUrl,
+              title: rawTitle,
+              groupTitle: groupCol !== -1 && cells[groupCol] ? collapseWs(cells[groupCol]) : '',
+              workspace: wsCol !== -1 && cells[wsCol] ? collapseWs(cells[wsCol]) : ''
+            });
+          }
+        }
+        return items;
+      }
+
+      function parseJsonTabs(raw) {
+        try {
+          var parsed = JSON.parse(stripBom(raw));
+          var items = [];
+          function pushTab(t, wsName) {
+            if (!t || typeof t !== 'object') return;
+            var u = String(t.url || t.href || '').trim();
+            if (!isSafeWebUrl(u)) return;
+            items.push({
+              url: u,
+              title: collapseWs(t.title || ''),
+              groupTitle: collapseWs(t.groupTitle || ''),
+              workspace: collapseWs(wsName || t.workspace || '')
+            });
+          }
+          if (Array.isArray(parsed)) {
+            parsed.forEach(function (entry) {
+              if (entry && Array.isArray(entry.tabs)) {
+                entry.tabs.forEach(function (t) { pushTab(t, entry.name); });
+              } else {
+                pushTab(entry, '');
+              }
+            });
+          } else if (parsed && typeof parsed === 'object') {
+            if (Array.isArray(parsed.workspaces)) {
+              parsed.workspaces.forEach(function (ws) {
+                if (ws && Array.isArray(ws.tabs)) {
+                  ws.tabs.forEach(function (t) { pushTab(t, ws.name); });
+                }
+              });
+            } else if (Array.isArray(parsed.tabs)) {
+              parsed.tabs.forEach(function (t) { pushTab(t, parsed.name); });
+            }
+          }
+          return items;
+        } catch (_) {
+          return [];
+        }
+      }
+
+      function parseLineTabs(raw) {
+        var lines = stripBom(raw).split(/\r\n|\n|\r/);
+        var items = [];
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line || /^#+\s/.test(line) || /^---$/.test(line)) continue;
+          var cleanedBullet = line.replace(/^(?:[-*+]|\d+\.)\s+/, '').trim();
+
+          var mdMatch = cleanedBullet.match(/^\[((?:\\.|[^\]])+)\]\((https?:\/\/[^\s)]+|file:\/\/[^\s)]+)\)/i);
+          if (mdMatch && isSafeWebUrl(mdMatch[2])) {
+            items.push({
+              url: mdMatch[2].trim(),
+              title: collapseWs(mdMatch[1].replace(/\\([[\]\\])/g, '$1')),
+              groupTitle: '',
+              workspace: ''
+            });
+            continue;
+          }
+
+          if (cleanedBullet.indexOf('|') !== -1) {
+            var pipeIdx = cleanedBullet.indexOf('|');
+            var left = cleanedBullet.slice(0, pipeIdx).trim();
+            var right = cleanedBullet.slice(pipeIdx + 1).trim();
+            if (isSafeWebUrl(left)) {
+              items.push({ url: left, title: collapseWs(right), groupTitle: '', workspace: '' });
+              continue;
+            }
+            if (isSafeWebUrl(right)) {
+              items.push({ url: right, title: collapseWs(left), groupTitle: '', workspace: '' });
+              continue;
+            }
+          }
+
+          if (isSafeWebUrl(cleanedBullet)) {
+            items.push({ url: cleanedBullet, title: '', groupTitle: '', workspace: '' });
+            continue;
+          }
+
+          var inlineUrlMatch = cleanedBullet.match(/(https?:\/\/[^\s)>]+)/i);
+          if (inlineUrlMatch && isSafeWebUrl(inlineUrlMatch[1])) {
+            var foundUrl = inlineUrlMatch[1];
+            var restTitle = collapseWs(cleanedBullet.replace(foundUrl, '').replace(/^[-:|–—\s]+|[-:|–—\s]+$/g, ''));
+            items.push({ url: foundUrl, title: restTitle, groupTitle: '', workspace: '' });
+          }
+        }
+        return items;
+      }
+
+      function extractDomain(urlStr) {
+        try {
+          var parsed = new URL(urlStr);
+          if (parsed.protocol.toLowerCase() === 'file:') return 'local-files';
+          return (parsed.hostname || 'other').toLowerCase().replace(/^www\./, '') || 'other';
+        } catch (_) {
+          return 'other';
+        }
+      }
+
+      function normalizeTabUrl(rawUrl, opts) {
+        var parsed = new URL(rawUrl);
+        parsed.protocol = parsed.protocol.toLowerCase();
+        if (parsed.hostname) parsed.hostname = parsed.hostname.toLowerCase();
+        if (
+          (parsed.protocol === 'http:' && parsed.port === '80') ||
+          (parsed.protocol === 'https:' && parsed.port === '443')
+        ) {
+          parsed.port = '';
+        }
+        var strippedParams = 0;
+        if (opts.stripHash && parsed.hash) {
+          parsed.hash = '';
+        }
+        if (parsed.search) {
+          var entries = [];
+          parsed.searchParams.forEach(function (val, key) {
+            var lower = key.toLowerCase();
+            if (opts.stripUtm && (TRACKING_PARAM_SET.has(lower) || lower.indexOf('utm_') === 0)) {
+              strippedParams += 1;
+              return;
+            }
+            entries.push([key, val]);
+          });
+          if (opts.sortQuery) {
+            entries.sort(function (a, b) {
+              if (a[0] === b[0]) return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
+              return a[0] < b[0] ? -1 : 1;
+            });
+          }
+          var nextSearch = new URLSearchParams();
+          entries.forEach(function (pair) { nextSearch.append(pair[0], pair[1]); });
+          var serialized = nextSearch.toString();
+          parsed.search = serialized ? '?' + serialized : '';
+        }
+        if (opts.sortQuery && parsed.pathname.length > 1) {
+          parsed.pathname = parsed.pathname.replace(/\/+$/, '') || '/';
+        }
+        return { canonicalUrl: parsed.href, strippedParams: strippedParams };
+      }
+
+      function isGenericTitle(title, url, canonicalUrl, domain) {
+        var t = collapseWs(title);
+        return !t || t === url || t === canonicalUrl || t === domain;
+      }
+
+      function encodeMdUrl(urlStr) {
+        return String(urlStr || '')
+          .replace(/\\/g, '%5C')
+          .replace(/ /g, '%20')
+          .replace(/\(/g, '%28')
+          .replace(/\)/g, '%29');
+      }
+
+      function escapeMdLinkText(str) {
+        return collapseWs(str).replace(/([\\[\]<>`])/g, '\\$1');
+      }
+
+      function escapeMdInline(str) {
+        return collapseWs(str).replace(/([\\[\]()<>_*`])/g, '\\$1');
+      }
+
+      function yamlQuote(str) {
+        return String(str == null ? '' : str)
+          .replace(/\\/g, '\\\\')
+          .replace(/"/g, '\\"')
+          .replace(/\r/g, '\\r')
+          .replace(/\n/g, '\\n')
+          .replace(/\t/g, '\\t');
+      }
+
+      function isDangerousFormula(val) {
+        var trimmed = String(val == null ? '' : val).trim();
+        if (!trimmed) return false;
+        var ch = trimmed.charAt(0);
+        if (ch === '=' || ch === '@') return true;
+        if (ch === '+' || ch === '-') {
+          return !/^[+-](?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+)%?$/.test(trimmed);
+        }
+        return false;
+      }
+
+      function guardFormula(val, enabled) {
+        var s = String(val == null ? '' : val);
+        if (!enabled || !isDangerousFormula(s)) return s;
+        return "'" + s;
+      }
+
+      function formatCsvCell(val, escapeFormulas) {
+        var clean = String(val == null ? '' : val).replace(/\r?\n/g, ' ').trim();
+        var s = guardFormula(clean, escapeFormulas);
+        if (/[",\r\n]/.test(s)) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      }
+
+      function formatTsvCell(val, escapeFormulas) {
+        var clean = String(val == null ? '' : val).replace(/[\t\r\n]+/g, ' ').trim();
+        var s = guardFormula(clean, escapeFormulas);
+        if (/["\t\r\n]/.test(s)) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      }
+
+      function groupByDomain(records) {
+        var map = new Map();
+        records.forEach(function (rec) {
+          if (!map.has(rec.domain)) map.set(rec.domain, []);
+          map.get(rec.domain).push(rec);
+        });
+        return Array.from(map.entries())
+          .map(function (pair) { return { domain: pair[0], count: pair[1].length, items: pair[1] }; })
+          .sort(function (a, b) {
+            return b.count !== a.count ? b.count - a.count : a.domain.localeCompare(b.domain);
+          });
+      }
+
+      function buildNotebookLmPack(records, meta) {
+        if (records.length === 0) return '';
+        var clusters = groupByDomain(records);
+        var lines = [
+          '# ' + escapeMdInline(meta.bundleTitle),
+          '',
+          '- Source Formatter: SessionMD Local URL Deduplicator',
+          '- Deduplicated Source URLs: ' + records.length + ' (' + meta.duplicatesRemoved + ' duplicates merged from ' + meta.totalInput + ' items)',
+          '- Stripped Tracking Parameters: ' + meta.strippedParamsTotal,
+          '- Distinct Domains: ' + clusters.length,
+          ''
+        ];
+
+        if (meta.groupMode === 'flat') {
+          lines.push('## Deduplicated Sources (' + records.length + ')');
+          lines.push('');
+          records.forEach(function (rec) {
+            var suffix = rec.groupTitle ? ' | Group: ' + escapeMdInline(rec.groupTitle) : '';
+            lines.push('- [' + escapeMdLinkText(rec.title) + '](' + encodeMdUrl(rec.canonicalUrl) + ')' + suffix);
+          });
+        } else {
+          clusters.forEach(function (cluster) {
+            lines.push('## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' sources)');
+            lines.push('');
+            cluster.items.forEach(function (rec) {
+              var metaParts = [];
+              if (rec.workspace) metaParts.push('Workspace: ' + escapeMdInline(rec.workspace));
+              if (rec.groupTitle) metaParts.push('Group: ' + escapeMdInline(rec.groupTitle));
+              var suffix = metaParts.length > 0 ? ' — ' + metaParts.join(' | ') : '';
+              lines.push('- [' + escapeMdLinkText(rec.title) + '](' + encodeMdUrl(rec.canonicalUrl) + ')' + suffix);
+            });
+            lines.push('');
+          });
+        }
+        return lines.join('\n').trim() + '\n';
+      }
+
+      function buildObsidianMarkdown(records, meta) {
+        if (records.length === 0) return '';
+        var clusters = groupByDomain(records);
+        var domainLines = clusters.slice(0, 25).map(function (c) {
+          return '  - "' + yamlQuote(c.domain) + '"';
+        }).join('\n');
+
+        var frontmatter = [
+          '---',
+          'title: "' + yamlQuote(meta.bundleTitle) + '"',
+          'source: "SessionMD"',
+          'tab_count: ' + records.length,
+          'duplicates_removed: ' + meta.duplicatesRemoved,
+          'domain_count: ' + clusters.length,
+          'domains:',
+          domainLines || '  - "none"',
+          'tags:',
+          '  - "browser-session"',
+          '  - "sessionmd"',
+          '---'
+        ].join('\n');
+
+        var sections = [];
+        if (meta.groupMode === 'flat') {
+          sections.push(records.map(function (rec) {
+            var groupNote = rec.groupTitle ? ' _(group: ' + escapeMdInline(rec.groupTitle) + ')_' : '';
+            return '- [' + escapeMdLinkText(rec.title) + '](' + encodeMdUrl(rec.canonicalUrl) + ')' + groupNote;
+          }).join('\n'));
+        } else {
+          clusters.forEach(function (cluster) {
+            var bullets = cluster.items.map(function (rec) {
+              var groupNote = rec.groupTitle ? ' _(group: ' + escapeMdInline(rec.groupTitle) + ')_' : '';
+              return '- [' + escapeMdLinkText(rec.title) + '](' + encodeMdUrl(rec.canonicalUrl) + ')' + groupNote;
+            }).join('\n');
+            sections.push('## ' + cluster.domain + ' (' + cluster.count + ')\n\n' + bullets);
+          });
+        }
+
+        return [
+          frontmatter,
+          '',
+          '# ' + escapeMdInline(meta.bundleTitle),
+          '',
+          records.length + ' clean tabs · ' + clusters.length + ' domains · ' + meta.duplicatesRemoved + ' duplicates collapsed',
+          '',
+          sections.join('\n\n')
+        ].join('\n') + '\n';
+      }
+
+      function buildDelimitedExport(records, escapeFn, delimiter, lineEnding, escapeFormulas) {
+        if (records.length === 0) return '';
+        var header = ['Domain', 'Title', 'CanonicalURL', 'TabGroup', 'OriginalURL'];
+        var rows = [header.map(function (h) { return escapeFn(h, escapeFormulas); }).join(delimiter)];
+        records.forEach(function (rec) {
+          rows.push([
+            rec.domain,
+            rec.title,
+            rec.canonicalUrl,
+            rec.groupTitle || '',
+            rec.originalUrl
+          ].map(function (cell) { return escapeFn(cell, escapeFormulas); }).join(delimiter));
+        });
+        return rows.join(lineEnding) + lineEnding;
+      }
+
+      function updateView() {
+        var raw = rawInputEl.value;
+        var selectedMode = inputModeEl.value;
+        var effectiveMode = selectedMode === 'auto' ? detectInputFormat(raw) : selectedMode;
+        var modeLabels = {
+          lines: 'URL / Markdown Lines',
+          csv: 'CSV Tab Export',
+          tsv: 'TSV Tab Export',
+          json: 'JSON Tab Array'
+        };
+        detectedBadgeEl.textContent = (selectedMode === 'auto' ? 'Detected: ' : 'Mode: ') + (modeLabels[effectiveMode] || 'Lines');
+
+        var parsedItems = [];
+        if (effectiveMode === 'json') {
+          parsedItems = parseJsonTabs(raw);
+        } else if (effectiveMode === 'csv') {
+          parsedItems = parseDelimitedTabs(raw, ',');
+        } else if (effectiveMode === 'tsv') {
+          parsedItems = parseDelimitedTabs(raw, '\t');
+        } else {
+          parsedItems = parseLineTabs(raw);
+        }
+
+        var opts = {
+          stripUtm: optStripUtmEl.checked,
+          dedupe: optDedupeEl.checked,
+          stripHash: optStripHashEl.checked,
+          sortQuery: optSortQueryEl.checked,
+          escapeFormulas: optEscapeFormulasEl.checked
+        };
+
+        var strippedParamsTotal = 0;
+        var seenMap = new Map();
+        var records = [];
+        var duplicatesRemoved = 0;
+
+        parsedItems.forEach(function (item) {
+          if (!isSafeWebUrl(item.url)) return;
+          var norm = normalizeTabUrl(item.url, opts);
+          strippedParamsTotal += norm.strippedParams;
+          var dom = extractDomain(norm.canonicalUrl);
+          var displayTitle = collapseWs(item.title) || dom || norm.canonicalUrl;
+
+          if (opts.dedupe && seenMap.has(norm.canonicalUrl)) {
+            duplicatesRemoved += 1;
+            var existing = records[seenMap.get(norm.canonicalUrl)];
+            if (
+              isGenericTitle(existing.title, existing.originalUrl, existing.canonicalUrl, existing.domain) &&
+              !isGenericTitle(displayTitle, item.url, norm.canonicalUrl, dom)
+            ) {
+              existing.title = displayTitle;
+            }
+            if (!existing.groupTitle && item.groupTitle) existing.groupTitle = item.groupTitle;
+            if (!existing.workspace && item.workspace) existing.workspace = item.workspace;
+            return;
+          }
+
+          seenMap.set(norm.canonicalUrl, records.length);
+          records.push({
+            originalUrl: item.url,
+            canonicalUrl: norm.canonicalUrl,
+            domain: dom,
+            title: displayTitle,
+            groupTitle: item.groupTitle || '',
+            workspace: item.workspace || ''
+          });
+        });
+
+        var bundleTitle = collapseWs(bundleTitleEl.value) || 'SessionMD Clean Sources';
+        var meta = {
+          bundleTitle: bundleTitle,
+          totalInput: parsedItems.length,
+          duplicatesRemoved: duplicatesRemoved,
+          strippedParamsTotal: strippedParamsTotal,
+          groupMode: groupModeEl.value || 'domain'
+        };
+
+        currentOutputs = {
+          notebooklm: buildNotebookLmPack(records, meta),
+          obsidian: buildObsidianMarkdown(records, meta),
+          urls: records.length > 0 ? records.map(function (r) { return r.canonicalUrl; }).join('\n') + '\n' : '',
+          tsv: buildDelimitedExport(records, formatTsvCell, '\t', '\n', opts.escapeFormulas),
+          csv: buildDelimitedExport(records, formatCsvCell, ',', '\r\n', opts.escapeFormulas)
+        };
+
+        var outText = currentOutputs[activeFormat] || '';
+        cleanOutputEl.value = outText;
+
+        var labelMap = {
+          notebooklm: 'NotebookLM Source Pack (.md)',
+          obsidian: 'Obsidian YAML + Markdown (.md)',
+          urls: 'Canonical Clean URLs (.txt)',
+          tsv: 'Formula-Guarded Google Sheets TSV (.tsv)',
+          csv: 'Formula-Guarded RFC 4180 CSV (.csv)'
+        };
+        outputLabelEl.textContent = labelMap[activeFormat];
+
+        var domainCount = groupByDomain(records).length;
+        var budgetPct = Math.min(100, (outText.length / NOTEBOOKLM_BUDGET_CHARS) * 100).toFixed(1);
+        statsOutputEl.textContent =
+          parsedItems.length + ' input items · ' +
+          records.length + ' unique URLs · ' +
+          duplicatesRemoved + ' duplicates removed · ' +
+          strippedParamsTotal + ' tracking params stripped · ' +
+          domainCount + ' domains (' + budgetPct + '% of 350k NotebookLM part budget)';
+      }
+
+      tabBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          activeFormat = btn.getAttribute('data-format') || 'notebooklm';
+          tabBtns.forEach(function (other) {
+            var isMatch = other === btn;
+            other.classList.toggle('active', isMatch);
+            other.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+          });
+          updateView();
+        });
+      });
+
+      document.getElementById('sample-research-btn').addEventListener('click', function () {
+        inputModeEl.value = 'auto';
+        rawInputEl.value = SAMPLE_RESEARCH;
+        updateView();
+        setStatus('Loaded multi-domain research tab sample with UTM & click-ID duplicates.');
+      });
+
+      document.getElementById('sample-onetab-btn').addEventListener('click', function () {
+        inputModeEl.value = 'auto';
+        rawInputEl.value = SAMPLE_ONETAB;
+        updateView();
+        setStatus('Loaded OneTab URL | Title export sample.');
+      });
+
+      document.getElementById('sample-csv-btn').addEventListener('click', function () {
+        inputModeEl.value = 'auto';
+        rawInputEl.value = SAMPLE_CSV;
+        updateView();
+        setStatus('Loaded CSV tab sample with formula-injection guard test.');
+      });
+
+      document.getElementById('clear-btn').addEventListener('click', function () {
+        rawInputEl.value = '';
+        updateView();
+        setStatus('Cleared.');
+      });
+
+      document.getElementById('copy-btn').addEventListener('click', function () {
+        var text = cleanOutputEl.value;
+        if (!text) {
+          setStatus('Nothing to copy yet.');
+          return;
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            setStatus('Copied ' + activeFormat.toUpperCase() + ' output to clipboard.');
+          }, function () {
+            cleanOutputEl.select();
+            document.execCommand('copy');
+            setStatus('Copied ' + activeFormat.toUpperCase() + ' output.');
+          });
+        } else {
+          cleanOutputEl.select();
+          document.execCommand('copy');
+          setStatus('Copied ' + activeFormat.toUpperCase() + ' output.');
+        }
+      });
+
+      document.getElementById('download-btn').addEventListener('click', function () {
+        var text = cleanOutputEl.value;
+        if (!text) {
+          setStatus('Nothing to download yet.');
+          return;
+        }
+        var meta = {
+          notebooklm: { ext: 'md', mime: 'text/markdown;charset=utf-8', prefix: 'sessionmd-notebooklm-pack' },
+          obsidian: { ext: 'md', mime: 'text/markdown;charset=utf-8', prefix: 'sessionmd-obsidian-workspace' },
+          urls: { ext: 'txt', mime: 'text/plain;charset=utf-8', prefix: 'sessionmd-clean-urls' },
+          tsv: { ext: 'tsv', mime: 'text/tab-separated-values;charset=utf-8', prefix: 'sessionmd-tabs' },
+          csv: { ext: 'csv', mime: 'text/csv;charset=utf-8', prefix: 'sessionmd-tabs' }
+        }[activeFormat] || { ext: 'txt', mime: 'text/plain;charset=utf-8', prefix: 'sessionmd-output' };
+
+        var filename = meta.prefix + '.' + meta.ext;
+        var blob = new Blob([text], { type: meta.mime });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(function () {
+          URL.revokeObjectURL(url);
+        }, 1000);
+        setStatus('Downloaded ' + filename + '.');
+      });
+
+      [
+        rawInputEl,
+        bundleTitleEl,
+        inputModeEl,
+        groupModeEl,
+        optStripUtmEl,
+        optDedupeEl,
+        optStripHashEl,
+        optSortQueryEl,
+        optEscapeFormulasEl
+      ].forEach(function (el) {
+        if (!el) return;
+        el.addEventListener('input', updateView);
+        el.addEventListener('change', updateView);
+      });
+
+      rawInputEl.value = SAMPLE_RESEARCH;
+      updateView();
+    })();
+  </script>
+</body>
+</html>
