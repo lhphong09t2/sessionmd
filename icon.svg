@@ -1,14 +1,188 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <rect x="0" y="0" width="128" height="128" rx="28" fill="#0B1120"/>
-  <rect x="3" y="3" width="122" height="122" rx="25" fill="none" stroke="#1E293B" stroke-width="2"/>
-  <path d="M22 36 C22 29.373 27.373 24 34 24 H60 C65.523 24 70 28.477 70 34 V40 H22 Z" fill="#10B981"/>
-  <path d="M74 33 C74 28.582 77.582 25 82 25 H96 C101.523 25 106 29.477 106 35 V40 H74 Z" fill="#06B6D4"/>
-  <rect x="20" y="38" width="88" height="68" rx="14" fill="#111C33" stroke="#10B981" stroke-width="4.5"/>
-  <rect x="31" y="51" width="12" height="10" rx="3" fill="#10B981"/>
-  <rect x="48" y="51" width="34" height="10" rx="3" fill="#F8FAFC"/>
-  <rect x="87" y="51" width="10" height="10" rx="3" fill="#22D3EE"/>
-  <rect x="31" y="67" width="12" height="10" rx="3" fill="#06B6D4"/>
-  <rect x="48" y="67" width="49" height="10" rx="3" fill="#CBD5E1"/>
-  <rect x="31" y="83" width="43" height="10" rx="3" fill="#34D399"/>
-  <rect x="79" y="83" width="18" height="10" rx="3" fill="#38BDF8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-labelledby="sm-title">
+  <title id="sm-title">SessionMD — The Tab Vault</title>
+  <defs>
+    <!-- Continuous-corner Apple superellipse squircle (952x952 centered at 512,512) -->
+    <path id="sm-squircle" d="M 260 36 L 764 36 C 838 36, 885 66.2, 921.4 102.6 C 957.8 139, 988 186, 988 260 L 988 764 C 988 838, 957.8 885, 921.4 921.4 C 885 957.8, 838 988, 764 988 L 260 988 C 186 988, 139 957.8, 102.6 921.4 C 66.2 885, 36 838, 36 764 L 36 260 C 36 186, 66.2 139, 102.6 102.6 C 139 66.2, 186 36, 260 36 Z"/>
+
+    <clipPath id="sm-squircle-clip">
+      <use href="#sm-squircle"/>
+    </clipPath>
+
+    <!-- Authentic concave browser-tab shoulder card (560 x 486 local coordinates) -->
+    <path id="sm-tab-card" d="M 0 42 C 0 16, 16 0, 42 0 L 236 0 C 260 0, 271 13, 282 42 C 293 71, 305 84, 330 84 L 514 84 C 541 84, 560 103, 560 130 L 560 440 C 560 467, 541 486, 514 486 L 46 486 C 19 486, 0 467, 0 440 Z"/>
+
+    <clipPath id="sm-card-clip">
+      <use href="#sm-tab-card"/>
+    </clipPath>
+
+    <!-- Recessed Markdown Down-Arrow (↓ keyhole) in front-card local coordinates (center 280, 286) -->
+    <path id="sm-keyhole-arrow" d="M 246 206 A 34 34 0 0 1 314 206 L 314 278 L 368 278 C 383 278, 390 295, 379 306 L 293 390 C 286 397, 274 397, 267 390 L 181 306 C 170 295, 177 278, 192 278 L 246 278 Z"/>
+
+    <clipPath id="sm-arrow-clip">
+      <use href="#sm-keyhole-arrow"/>
+    </clipPath>
+
+    <!-- -60deg Dimensional Royal Cobalt squircle (#3478F6 -> #153999) -->
+    <linearGradient id="sm-cobalt" x1="256" y1="68" x2="768" y2="956" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3478F6"/>
+      <stop offset="0.48" stop-color="#2255CE"/>
+      <stop offset="1" stop-color="#153999"/>
+    </linearGradient>
+
+    <radialGradient id="sm-sky-sheen" cx="300" cy="128" r="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#93C5FD" stop-opacity="0.24"/>
+      <stop offset="0.55" stop-color="#60A5FA" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#3478F6" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 3px top specular squircle rim (-60deg) -->
+    <linearGradient id="sm-rim" x1="220" y1="36" x2="804" y2="988" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.52"/>
+      <stop offset="0.38" stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="0.75" stop-color="#FFFFFF" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#071540" stop-opacity="0.42"/>
+    </linearGradient>
+
+    <!-- 2px specular top rims for frosted rear tab cards -->
+    <linearGradient id="sm-frosted-rim-back" x1="120" y1="0" x2="440" y2="486" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="0.32" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.06"/>
+    </linearGradient>
+
+    <linearGradient id="sm-frosted-rim-mid" x1="120" y1="0" x2="440" y2="486" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.92"/>
+      <stop offset="0.38" stop-color="#FFFFFF" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <!-- Front Porcelain Vault Card (#FFFFFF -> #DCE8FF, -60deg) -->
+    <linearGradient id="sm-porcelain" x1="140" y1="0" x2="420" y2="486" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.54" stop-color="#F2F7FF"/>
+      <stop offset="1" stop-color="#DCE8FF"/>
+    </linearGradient>
+
+    <linearGradient id="sm-porcelain-rim" x1="120" y1="0" x2="440" y2="486" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#9BB8EE" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <!-- Sunken vault escutcheon bezel -->
+    <linearGradient id="sm-vault-well" x1="180" y1="158" x2="380" y2="414" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#CEDFF9"/>
+      <stop offset="0.5" stop-color="#E5EFFE"/>
+      <stop offset="1" stop-color="#FAFCFF"/>
+    </linearGradient>
+
+    <!-- Warm Amber active tab indicator (#FBBF24 -> #D97706) -->
+    <linearGradient id="sm-amber" x1="48" y1="24" x2="202" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FBBF24"/>
+      <stop offset="0.5" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#D97706"/>
+    </linearGradient>
+
+    <!-- Recessed Royal Cobalt Markdown Down-Arrow (↓ keyhole) -->
+    <linearGradient id="sm-recessed-cobalt" x1="210" y1="172" x2="350" y2="396" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#123186"/>
+      <stop offset="0.45" stop-color="#1E4EB8"/>
+      <stop offset="1" stop-color="#2E6EE6"/>
+    </linearGradient>
+
+    <!-- Squircle contact + ambient drop shadow (dy=10 stdDeviation=8, zero bottom viewBox clip) -->
+    <filter id="sm-base-shadow" x="-10%" y="-8%" width="120%" height="122%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#071338" flood-opacity="0.32"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#071338" flood-opacity="0.26"/>
+    </filter>
+
+    <!-- Cascading card shadows -->
+    <filter id="sm-back-shadow" x="-14%" y="-12%" width="128%" height="130%">
+      <feDropShadow dx="-2" dy="10" stdDeviation="10" flood-color="#091D5C" flood-opacity="0.34"/>
+    </filter>
+    <filter id="sm-mid-shadow" x="-14%" y="-12%" width="128%" height="130%">
+      <feDropShadow dx="-4" dy="12" stdDeviation="12" flood-color="#091D5C" flood-opacity="0.38"/>
+    </filter>
+    <filter id="sm-front-shadow" x="-16%" y="-12%" width="132%" height="134%">
+      <feDropShadow dx="-2" dy="6" stdDeviation="6" flood-color="#081A54" flood-opacity="0.36"/>
+      <feDropShadow dx="-6" dy="20" stdDeviation="18" flood-color="#081A54" flood-opacity="0.42"/>
+    </filter>
+    <filter id="sm-amber-shadow" x="-20%" y="-25%" width="140%" height="165%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#92400E" flood-opacity="0.28"/>
+    </filter>
+    <filter id="sm-inset-blur" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="5.5"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(0 -4)">
+    <!-- 1. Dimensional Royal Cobalt Squircle -->
+    <g filter="url(#sm-base-shadow)">
+      <use href="#sm-squircle" fill="url(#sm-cobalt)"/>
+    </g>
+
+    <g clip-path="url(#sm-squircle-clip)">
+      <rect width="1024" height="1024" fill="url(#sm-sky-sheen)"/>
+
+      <!-- 2. Rearmost Frosted Browser-Tabbed Card (+104, -112 up-right, rgba 0.26 + 2px specular rim) -->
+      <g transform="translate(294 204)">
+        <g filter="url(#sm-back-shadow)">
+          <use href="#sm-tab-card" fill="#FFFFFF" fill-opacity="0.26"/>
+        </g>
+        <g clip-path="url(#sm-card-clip)">
+          <use href="#sm-tab-card" fill="none" stroke="url(#sm-frosted-rim-back)" stroke-width="4"/>
+        </g>
+      </g>
+
+      <!-- 3. Middle Frosted Browser-Tabbed Card (+52, -56 up-right, rgba 0.54 + 2px specular rim) -->
+      <g transform="translate(242 260)">
+        <g filter="url(#sm-mid-shadow)">
+          <use href="#sm-tab-card" fill="#FFFFFF" fill-opacity="0.54"/>
+        </g>
+        <g clip-path="url(#sm-card-clip)">
+          <use href="#sm-tab-card" fill="none" stroke="url(#sm-frosted-rim-mid)" stroke-width="4"/>
+        </g>
+      </g>
+
+      <!-- 4. Front Porcelain Vault Card (#FFFFFF -> #DCE8FF) -->
+      <g transform="translate(190 316)">
+        <g filter="url(#sm-front-shadow)">
+          <use href="#sm-tab-card" fill="url(#sm-porcelain)"/>
+        </g>
+        <g clip-path="url(#sm-card-clip)">
+          <!-- Subtle machined browser tab divider rule ending cleanly at x=318 -->
+          <line x1="26" y1="88" x2="318" y2="88" stroke="#C6D9F8" stroke-width="2" stroke-linecap="round"/>
+          <line x1="26" y1="90" x2="318" y2="90" stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="2" stroke-linecap="round"/>
+
+          <!-- Warm Amber Active Tab Indicator (#FBBF24 -> #D97706) -->
+          <g filter="url(#sm-amber-shadow)">
+            <rect x="38" y="26" width="176" height="36" rx="18" fill="url(#sm-amber)"/>
+            <rect x="39.5" y="27.5" width="173" height="33" rx="16.5" fill="none" stroke="#FFFBEB" stroke-opacity="0.62" stroke-width="2.5"/>
+          </g>
+
+          <!-- Sunken Vault Escutcheon Bezel -->
+          <circle cx="280" cy="286" r="134" fill="url(#sm-vault-well)"/>
+          <circle cx="280" cy="286" r="134" fill="none" stroke="#FFFFFF" stroke-opacity="0.88" stroke-width="2.5"/>
+
+          <!-- Porcelain bottom-right catchlight around recessed ↓ keyhole -->
+          <g transform="translate(2 3)">
+            <use href="#sm-keyhole-arrow" fill="#FFFFFF" fill-opacity="0.92"/>
+          </g>
+
+          <!-- Recessed Royal Cobalt Markdown Down-Arrow (↓ Keyhole) -->
+          <use href="#sm-keyhole-arrow" fill="url(#sm-recessed-cobalt)"/>
+          <g clip-path="url(#sm-arrow-clip)">
+            <!-- Machined inset wall shadow (-60deg top-left overhang) -->
+            <path d="M 140 140 H 420 V 420 H 140 Z M 246 206 L 246 278 L 192 278 C 177 278, 170 295, 181 306 L 267 390 C 274 397, 286 397, 293 390 L 379 306 C 390 295, 383 278, 368 278 L 314 278 L 314 206 A 34 34 0 0 0 246 206 Z" fill="#061238" fill-opacity="0.58" fill-rule="evenodd" transform="translate(4 7)" filter="url(#sm-inset-blur)"/>
+          </g>
+
+          <!-- Crisp front card specular rim -->
+          <use href="#sm-tab-card" fill="none" stroke="url(#sm-porcelain-rim)" stroke-width="5"/>
+        </g>
+      </g>
+
+      <!-- 5. 3px Inner Specular Squircle Rim -->
+      <use href="#sm-squircle" fill="none" stroke="url(#sm-rim)" stroke-width="6"/>
+    </g>
+  </g>
 </svg>

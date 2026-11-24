@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b1120" />
+  <meta name="theme-color" content="#F6F8FB" />
   <title>Free Tab URL Deduplicator, UTM Stripper &amp; NotebookLM Markdown Formatter — SessionMD</title>
   <meta name="description" content="Deduplicate browser tab URLs, strip utm_*, fbclid, and gclid tracking parameters, and format OneTab or CSV tab dumps into Google NotebookLM source packs, Obsidian YAML Markdown, or Google Sheets TSV locally." />
   <link rel="canonical" href="https://lhphong09t2.github.io/sessionmd/tab-deduper.html" />
-  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="icon" href="./favicon.ico" sizes="any" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
 
   <meta property="og:type" content="website" />
@@ -57,35 +58,71 @@
 
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #0b1120;
-      --surface: #111a2e;
-      --surface-2: #16223b;
-      --card: #1b2a47;
-      --border: rgba(148, 163, 184, 0.16);
-      --border-strong: rgba(148, 163, 184, 0.28);
-      --border-emerald: rgba(16, 185, 129, 0.44);
-      --text: #f8fafc;
-      --text-soft: #cbd5e1;
-      --muted: #94a3b8;
-      --subtle: #64748b;
-      --accent: #10b981;
-      --accent-hover: #34d399;
-      --accent-cyan: #22d3ee;
-      --accent-ink: #032215;
+      color-scheme: light;
+      --bg: #F6F8FB;
+      --surface: #FFFFFF;
+      --surface-2: #EDF1F7;
+      --card: #FFFFFF;
+      --footer-bg: #EEF2F8;
+      --header-bg: rgba(246, 248, 251, 0.92);
+      --showcase-bar-bg: #EDF1F7;
+      --border: #DCE3EE;
+      --border-strong: #C4D0E0;
+      --border-accent: rgba(37, 99, 235, 0.34);
+      --text: #0F172A;
+      --text-soft: #1E293B;
+      --muted: #475569;
+      --subtle: #64748B;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-soft: #1D4ED8;
+      --accent-amber: #D97706;
+      --accent-wash: rgba(37, 99, 235, 0.09);
+      --accent-wash-strong: rgba(37, 99, 235, 0.14);
+      --accent-ink: #FFFFFF;
+      --shadow-card: 0 2px 10px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-elev: 0 18px 42px rgba(15, 23, 42, 0.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --bg: #111622;
+        --surface: #1A2234;
+        --surface-2: #222D44;
+        --card: #1A2234;
+        --footer-bg: #0C101A;
+        --header-bg: rgba(17, 22, 34, 0.92);
+        --showcase-bar-bg: #161E2E;
+        --border: #2B3650;
+        --border-strong: #3B496B;
+        --border-accent: rgba(96, 165, 250, 0.42);
+        --text: #F1F5F9;
+        --text-soft: #E2E8F0;
+        --muted: #94A3B8;
+        --subtle: #64748B;
+        --accent: #3B82F6;
+        --accent-hover: #60A5FA;
+        --accent-soft: #93C5FD;
+        --accent-amber: #F59E0B;
+        --accent-wash: rgba(59, 130, 246, 0.14);
+        --accent-wash-strong: rgba(59, 130, 246, 0.22);
+        --accent-ink: #FFFFFF;
+        --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.35);
+        --shadow-elev: 0 24px 48px rgba(0, 0, 0, 0.55);
+      }
     }
     *, *::before, *::after { box-sizing: border-box; }
     html {
-      background-color: #0b1120;
+      background-color: var(--bg);
       scroll-behavior: smooth;
       scroll-padding-top: 84px;
     }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
-      background-color: #0b1120;
+      background-color: var(--bg);
       background-image:
-        radial-gradient(900px 380px at 50% 0%, rgba(16, 185, 129, 0.12), #0b1120 72%);
+        radial-gradient(920px 420px at 50% 0%, var(--accent-wash), var(--bg) 72%);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
@@ -99,7 +136,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background-color: rgba(11, 17, 32, 0.88);
+      background-color: var(--header-bg);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
@@ -128,7 +165,7 @@
       min-height: 44px;
     }
     .brand:hover { text-decoration: none; color: var(--text); }
-    .brand svg { flex-shrink: 0; border-radius: 7px; }
+    .brand svg, .brand img { flex-shrink: 0; border-radius: 7px; }
     .desktop-nav {
       display: flex;
       align-items: center;
@@ -208,11 +245,11 @@
       max-height: calc(100dvh - 76px);
       overflow-y: auto;
       overscroll-behavior: contain;
-      background-color: #111a2e;
+      background-color: var(--surface);
       border: 1px solid var(--border-strong);
       border-radius: 14px;
       padding: 12px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65);
+      box-shadow: var(--shadow-elev);
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -267,9 +304,9 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background-color: rgba(16, 185, 129, 0.1);
-      color: #6ee7b7;
-      border: 1px solid rgba(16, 185, 129, 0.34);
+      background-color: var(--accent-wash);
+      color: var(--accent-soft);
+      border: 1px solid var(--border-accent);
       padding: 5px 13px;
       border-radius: 999px;
       font-size: 12px;
@@ -305,7 +342,7 @@
       border-radius: 16px;
       padding: 22px;
       margin-bottom: 40px;
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.38);
+      box-shadow: var(--shadow-elev);
     }
     @media (max-width: 520px) {
       .tool-shell { padding: 16px; }
@@ -372,7 +409,7 @@
     }
     button.tab:hover { color: var(--text); border-color: var(--border-strong); }
     button.tab.active {
-      background-color: rgba(16, 185, 129, 0.14);
+      background-color: var(--accent-wash-strong);
       color: var(--accent-hover);
       border-color: var(--accent);
     }
@@ -562,10 +599,10 @@
 
     .cta-box {
       background-color: var(--surface-2);
-      border: 1px solid var(--border-emerald);
+      border: 1px solid var(--border-accent);
       border-radius: 16px;
       padding: 28px;
-      box-shadow: 0 18px 44px rgba(16, 185, 129, 0.08);
+      box-shadow: var(--shadow-elev);
     }
     @media (max-width: 520px) {
       .cta-box { padding: 20px; }
@@ -594,7 +631,7 @@
     /* Unified Footer */
     .site-footer {
       border-top: 1px solid var(--border);
-      background-color: #080d19;
+      background-color: var(--footer-bg);
       padding: 48px 20px 36px;
     }
     .footer-inner {
@@ -665,20 +702,7 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="./">
-        <svg viewBox="0 0 128 128" width="28" height="28" aria-hidden="true">
-          <rect x="0" y="0" width="128" height="128" rx="28" fill="#0B1120"/>
-          <rect x="3" y="3" width="122" height="122" rx="25" fill="none" stroke="#1E293B" stroke-width="2"/>
-          <path d="M22 36 C22 29.373 27.373 24 34 24 H60 C65.523 24 70 28.477 70 34 V40 H22 Z" fill="#10B981"/>
-          <path d="M74 33 C74 28.582 77.582 25 82 25 H96 C101.523 25 106 29.477 106 35 V40 H74 Z" fill="#06B6D4"/>
-          <rect x="20" y="38" width="88" height="68" rx="14" fill="#111C33" stroke="#10B981" stroke-width="4.5"/>
-          <rect x="31" y="51" width="12" height="10" rx="3" fill="#10B981"/>
-          <rect x="48" y="51" width="34" height="10" rx="3" fill="#F8FAFC"/>
-          <rect x="87" y="51" width="10" height="10" rx="3" fill="#22D3EE"/>
-          <rect x="31" y="67" width="12" height="10" rx="3" fill="#06B6D4"/>
-          <rect x="48" y="67" width="49" height="10" rx="3" fill="#CBD5E1"/>
-          <rect x="31" y="83" width="43" height="10" rx="3" fill="#34D399"/>
-          <rect x="79" y="83" width="18" height="10" rx="3" fill="#38BDF8"/>
-        </svg>
+        <img src="./icon.svg" alt="SessionMD — The Tab Vault" width="28" height="28" />
         <span>SessionMD</span>
       </a>
 
@@ -709,6 +733,7 @@
           <a href="./privacy.html">Privacy Policy</a>
           <div class="mobile-cta-group">
             <a class="btn primary" href="https://chromewebstore.google.com/detail/sessionmd-%E2%80%94-crash-safe-ta/iehkfahkfobkcpcfpkhjcnbabeiigaje" target="_blank" rel="noopener">Add to Chrome &mdash; Free</a>
+        <a class="btn secondary" href="https://microsoftedge.microsoft.com/addons/detail/bkaeglckkmdkjkcdchcafogojcadamcm" target="_blank" rel="noopener">Add to Edge &mdash; Free</a>
             <a class="btn secondary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro Lifetime &mdash; $29</a>
           </div>
         </nav>
@@ -763,8 +788,8 @@
           </label>
           <label><input type="checkbox" id="opt-strip-utm" checked /> Strip <code>utm_*</code> &amp; click IDs</label>
           <label><input type="checkbox" id="opt-dedupe" checked /> Deduplicate URLs</label>
-          <label><input type="checkbox" id="opt-strip-hash" checked /> Strip <code>#fragment</code> anchors</label>
-          <label><input type="checkbox" id="opt-sort-query" checked /> Sort query keys &amp; trim <code>/</code></label>
+          <label><input type="checkbox" id="opt-strip-hash" /> Strip <code>#fragment</code> anchors</label>
+          <label><input type="checkbox" id="opt-sort-query" /> Sort query keys &amp; trim <code>/</code></label>
           <label><input type="checkbox" id="opt-escape-formulas" checked /> Guard formulas (<code>= + - @</code>)</label>
         </div>
 
@@ -870,6 +895,7 @@
       <p>The <strong>SessionMD</strong> Chrome extension saves open windows and Chrome Tab Groups automatically with a 12-snapshot local crash-recovery ring buffer and zero <code>&lt;all_urls&gt;</code> permissions. Upgrade to <strong>SessionMD Pro ($29 one-time)</strong> for unlimited saved workspaces, cross-workspace deduplicated digests, and auto-chunked 350k-character Google NotebookLM source packs.</p>
       <div class="cta-row">
         <a class="btn primary" href="https://chromewebstore.google.com/detail/sessionmd-%E2%80%94-crash-safe-ta/iehkfahkfobkcpcfpkhjcnbabeiigaje" target="_blank" rel="noopener">Add to Chrome &mdash; Free</a>
+        <a class="btn secondary" href="https://microsoftedge.microsoft.com/addons/detail/bkaeglckkmdkjkcdchcafogojcadamcm" target="_blank" rel="noopener">Add to Edge &mdash; Free</a>
         <a class="btn secondary" href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">Unlock Pro Lifetime &mdash; $29</a>
         <a class="btn secondary" href="./">Explore SessionMD Overview</a>
       </div>
@@ -881,20 +907,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a class="brand" href="./">
-            <svg viewBox="0 0 128 128" width="26" height="26" aria-hidden="true">
-              <rect x="0" y="0" width="128" height="128" rx="28" fill="#0B1120"/>
-              <rect x="3" y="3" width="122" height="122" rx="25" fill="none" stroke="#1E293B" stroke-width="2"/>
-              <path d="M22 36 C22 29.373 27.373 24 34 24 H60 C65.523 24 70 28.477 70 34 V40 H22 Z" fill="#10B981"/>
-              <path d="M74 33 C74 28.582 77.582 25 82 25 H96 C101.523 25 106 29.477 106 35 V40 H74 Z" fill="#06B6D4"/>
-              <rect x="20" y="38" width="88" height="68" rx="14" fill="#111C33" stroke="#10B981" stroke-width="4.5"/>
-              <rect x="31" y="51" width="12" height="10" rx="3" fill="#10B981"/>
-              <rect x="48" y="51" width="34" height="10" rx="3" fill="#F8FAFC"/>
-              <rect x="87" y="51" width="10" height="10" rx="3" fill="#22D3EE"/>
-              <rect x="31" y="67" width="12" height="10" rx="3" fill="#06B6D4"/>
-              <rect x="48" y="67" width="49" height="10" rx="3" fill="#CBD5E1"/>
-              <rect x="31" y="83" width="43" height="10" rx="3" fill="#34D399"/>
-              <rect x="79" y="83" width="18" height="10" rx="3" fill="#38BDF8"/>
-            </svg>
+            <img src="./icon.svg" alt="SessionMD — The Tab Vault" width="26" height="26" />
             <span>SessionMD</span>
           </a>
           <p>Crash-safe Chrome Manifest V3 tab session saver, URL deduplicator, and Obsidian/NotebookLM Markdown workspace by FlowBench Lab.</p>
@@ -904,6 +917,7 @@
           <h3>Product</h3>
           <ul>
             <li><a href="https://chromewebstore.google.com/detail/sessionmd-%E2%80%94-crash-safe-ta/iehkfahkfobkcpcfpkhjcnbabeiigaje" target="_blank" rel="noopener">Chrome Web Store</a></li>
+            <li><a href="https://microsoftedge.microsoft.com/addons/detail/bkaeglckkmdkjkcdchcafogojcadamcm" target="_blank" rel="noopener">Microsoft Edge Add-ons</a></li>
             <li><a href="./tab-deduper.html">Free Tab URL Deduper</a></li>
             <li><a href="https://buy.polar.sh/polar_cl_wRG1ve2oS5k8hzgzL4alrmvQqsWFLhKlPc2Zm2XyNek" target="_blank" rel="noopener">SessionMD Pro ($29)</a></li>
             <li><a href="./#activate">License Activation</a></li>
@@ -931,7 +945,7 @@
       </div>
 
       <div class="footer-bottom">
-        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.0.0</span>
+        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.1</span>
         <span>100% Client-Side Execution &middot; Zero Server Upload</span>
       </div>
     </div>
@@ -1034,6 +1048,7 @@
 
       var activeFormat = 'notebooklm';
       var currentOutputs = { notebooklm: '', obsidian: '', urls: '', tsv: '', csv: '' };
+      var currentNotebookBundle = { parts: [], combinedMarkdown: '' };
       var statusTimer = null;
 
       function setStatus(msg) {
@@ -1048,7 +1063,8 @@
 
       function collapseWs(str) {
         return String(str == null ? '' : str)
-          .replace(/\u00a0/g, ' ')
+          .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '')
+          .replace(/[\u00a0\u2028\u2029]/g, ' ')
           .replace(/[ \t\r\n]+/g, ' ')
           .trim();
       }
@@ -1057,8 +1073,38 @@
         return str && str.charCodeAt(0) === 65279 ? str.slice(1) : str;
       }
 
+      function stripControlChars(str) {
+        return String(str == null ? '' : str).replace(/[\u0000-\u001f\u007f]+/g, '').trim();
+      }
+
+      function safeSliceUtf16(str, maxUnits) {
+        var s = String(str == null ? '' : str);
+        if (!Number.isFinite(maxUnits) || maxUnits <= 0) return '';
+        if (s.length <= maxUnits) return s;
+        var end = Math.floor(maxUnits);
+        if (end > 0) {
+          var code = s.charCodeAt(end - 1);
+          if (code >= 0xd800 && code <= 0xdbff) {
+            end -= 1;
+          }
+        }
+        return s.slice(0, end);
+      }
+
+      function trimSafeMdText(str, maxUnits) {
+        var out = safeSliceUtf16(str, maxUnits);
+        var trailingSlashes = 0;
+        for (var i = out.length - 1; i >= 0 && out.charAt(i) === '\\'; i -= 1) {
+          trailingSlashes += 1;
+        }
+        if (trailingSlashes % 2 === 1) {
+          out = out.slice(0, -1);
+        }
+        return out;
+      }
+
       function isSafeWebUrl(rawUrl) {
-        var cleaned = String(rawUrl == null ? '' : rawUrl).replace(/[\u0000-\u001f\u007f]+/g, '').trim();
+        var cleaned = stripControlChars(rawUrl);
         if (!cleaned) return false;
         var probe = cleaned.replace(/[\s\u00a0]+/g, '');
         if (/^(?:javascript|data|vbscript):/i.test(probe)) return false;
@@ -1076,18 +1122,38 @@
         if ((s.charAt(0) === '[' || s.charAt(0) === '{') && /"url"\s*:/i.test(s)) {
           return 'json';
         }
-        var sampleLines = s.split(/\r\n|\n|\r/).filter(Boolean).slice(0, 6);
-        if (sampleLines.length >= 1 && sampleLines[0].indexOf('\t') !== -1) {
+        var sampleLines = s.split(/\r\n|\n|\r/).map(function (l) { return l.trim(); }).filter(Boolean).slice(0, 8);
+        if (sampleLines.length === 0) return 'lines';
+        var firstLine = sampleLines[0];
+
+        // Markdown-before-CSV detection: headings, frontmatter, bulleted/numbered lists, or Markdown links stay in 'lines' mode
+        var looksLikeMarkdownLines =
+          /^(?:#+\s|---$|[-*+]\s|\d+\.\s|https?:\/\/|file:\/\/)/i.test(firstLine) ||
+          sampleLines.some(function (line) {
+            return /\[[^\]]+\]\((?:https?|file):\/\//i.test(line);
+          });
+        if (looksLikeMarkdownLines) {
+          return 'lines';
+        }
+
+        if (firstLine.indexOf('\t') !== -1) {
           return 'tsv';
         }
-        var firstLine = sampleLines[0] || '';
-        if (
-          sampleLines.length >= 2 &&
-          firstLine.indexOf(',') !== -1 &&
-          !/^[-*]\s*\[/.test(firstLine) &&
-          !/^https?:\/\//i.test(firstLine)
-        ) {
-          return 'csv';
+
+        if (sampleLines.length >= 2 && firstLine.indexOf(',') !== -1) {
+          var sampleGrid = parseDelimited(sampleLines.join('\n'), ',');
+          if (sampleGrid.length >= 1) {
+            var headerCols = sampleGrid[0].map(function (h) { return collapseWs(h).toLowerCase(); });
+            var hasUrlHeader = headerCols.some(function (h) {
+              return h === 'url' || h === 'href' || h === 'link' || h === 'canonicalurl';
+            });
+            var hasUrlCell = sampleGrid.some(function (row) {
+              return row.some(function (cell) { return isSafeWebUrl(cell); });
+            });
+            if (hasUrlHeader || hasUrlCell) {
+              return 'csv';
+            }
+          }
         }
         return 'lines';
       }
@@ -1147,7 +1213,7 @@
         var grid = parseDelimited(raw, delimiter);
         if (grid.length === 0) return [];
         var header = grid[0].map(function (h) { return collapseWs(h).toLowerCase(); });
-        var urlCol = header.findIndex(function (h) { return h === 'url' || h === 'href' || h === 'link'; });
+        var urlCol = header.findIndex(function (h) { return h === 'url' || h === 'href' || h === 'link' || h === 'canonicalurl'; });
         var titleCol = header.findIndex(function (h) { return h === 'title' || h === 'name' || h === 'page'; });
         var groupCol = header.findIndex(function (h) { return h === 'tabgroup' || h === 'group' || h === 'category'; });
         var wsCol = header.findIndex(function (h) { return h === 'workspace' || h === 'session'; });
@@ -1159,12 +1225,12 @@
           var rawUrl = '';
           var rawTitle = '';
           if (urlCol !== -1 && cells[urlCol]) {
-            rawUrl = cells[urlCol].trim();
+            rawUrl = stripControlChars(cells[urlCol]);
             rawTitle = titleCol !== -1 && cells[titleCol] ? cells[titleCol].trim() : '';
           } else {
             var foundIdx = cells.findIndex(function (c) { return isSafeWebUrl(c); });
             if (foundIdx !== -1) {
-              rawUrl = cells[foundIdx].trim();
+              rawUrl = stripControlChars(cells[foundIdx]);
               for (var cIdx = 0; cIdx < cells.length; cIdx++) {
                 if (cIdx !== foundIdx && cells[cIdx].trim()) {
                   rawTitle = cells[cIdx].trim();
@@ -1191,7 +1257,7 @@
           var items = [];
           function pushTab(t, wsName) {
             if (!t || typeof t !== 'object') return;
-            var u = String(t.url || t.href || '').trim();
+            var u = stripControlChars(t.url || t.href || '');
             if (!isSafeWebUrl(u)) return;
             items.push({
               url: u,
@@ -1225,6 +1291,15 @@
         }
       }
 
+      function unescapeMdLinkText(str) {
+        return collapseWs(
+          String(str == null ? '' : str)
+            .replace(/\\([[\]\\<>`])/g, '$1')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+        );
+      }
+
       function parseLineTabs(raw) {
         var lines = stripBom(raw).split(/\r\n|\n|\r/);
         var items = [];
@@ -1233,11 +1308,12 @@
           if (!line || /^#+\s/.test(line) || /^---$/.test(line)) continue;
           var cleanedBullet = line.replace(/^(?:[-*+]|\d+\.)\s+/, '').trim();
 
-          var mdMatch = cleanedBullet.match(/^\[((?:\\.|[^\]])+)\]\((https?:\/\/[^\s)]+|file:\/\/[^\s)]+)\)/i);
+          // Supports balanced parentheses in URLs (e.g., Wikipedia links)
+          var mdMatch = cleanedBullet.match(/^\[((?:\\.|[^\]])+)\]\(((?:https?|file):\/\/(?:[^\s()]+|\([^\s()]*\))+)\)/i);
           if (mdMatch && isSafeWebUrl(mdMatch[2])) {
             items.push({
-              url: mdMatch[2].trim(),
-              title: collapseWs(mdMatch[1].replace(/\\([[\]\\])/g, '$1')),
+              url: stripControlChars(mdMatch[2]),
+              title: unescapeMdLinkText(mdMatch[1]),
               groupTitle: '',
               workspace: ''
             });
@@ -1249,24 +1325,24 @@
             var left = cleanedBullet.slice(0, pipeIdx).trim();
             var right = cleanedBullet.slice(pipeIdx + 1).trim();
             if (isSafeWebUrl(left)) {
-              items.push({ url: left, title: collapseWs(right), groupTitle: '', workspace: '' });
+              items.push({ url: stripControlChars(left), title: collapseWs(right), groupTitle: '', workspace: '' });
               continue;
             }
             if (isSafeWebUrl(right)) {
-              items.push({ url: right, title: collapseWs(left), groupTitle: '', workspace: '' });
+              items.push({ url: stripControlChars(right), title: collapseWs(left), groupTitle: '', workspace: '' });
               continue;
             }
           }
 
           if (isSafeWebUrl(cleanedBullet)) {
-            items.push({ url: cleanedBullet, title: '', groupTitle: '', workspace: '' });
+            items.push({ url: stripControlChars(cleanedBullet), title: '', groupTitle: '', workspace: '' });
             continue;
           }
 
-          var inlineUrlMatch = cleanedBullet.match(/(https?:\/\/[^\s)>]+)/i);
+          var inlineUrlMatch = cleanedBullet.match(/(https?:\/\/(?:[^\s()<>]+|\([^\s()<>]*\))+)/i);
           if (inlineUrlMatch && isSafeWebUrl(inlineUrlMatch[1])) {
-            var foundUrl = inlineUrlMatch[1];
-            var restTitle = collapseWs(cleanedBullet.replace(foundUrl, '').replace(/^[-:|–—\s]+|[-:|–—\s]+$/g, ''));
+            var foundUrl = stripControlChars(inlineUrlMatch[1]);
+            var restTitle = collapseWs(cleanedBullet.replace(inlineUrlMatch[1], '').replace(/^[-:|–—\s]+|[-:|–—\s]+$/g, ''));
             items.push({ url: foundUrl, title: restTitle, groupTitle: '', workspace: '' });
           }
         }
@@ -1275,7 +1351,7 @@
 
       function extractDomain(urlStr) {
         try {
-          var parsed = new URL(urlStr);
+          var parsed = new URL(stripControlChars(urlStr));
           if (parsed.protocol.toLowerCase() === 'file:') return 'local-files';
           return (parsed.hostname || 'other').toLowerCase().replace(/^www\./, '') || 'other';
         } catch (_) {
@@ -1283,50 +1359,84 @@
         }
       }
 
-      function normalizeTabUrl(rawUrl, opts) {
-        var parsed = new URL(rawUrl);
-        parsed.protocol = parsed.protocol.toLowerCase();
-        if (parsed.hostname) parsed.hostname = parsed.hostname.toLowerCase();
-        if (
-          (parsed.protocol === 'http:' && parsed.port === '80') ||
-          (parsed.protocol === 'https:' && parsed.port === '443')
-        ) {
-          parsed.port = '';
-        }
-        var strippedParams = 0;
-        if (opts.stripHash && parsed.hash) {
-          parsed.hash = '';
-        }
-        if (parsed.search) {
-          var entries = [];
-          parsed.searchParams.forEach(function (val, key) {
-            var lower = key.toLowerCase();
-            if (opts.stripUtm && (TRACKING_PARAM_SET.has(lower) || lower.indexOf('utm_') === 0)) {
-              strippedParams += 1;
-              return;
-            }
-            entries.push([key, val]);
-          });
-          if (opts.sortQuery) {
-            entries.sort(function (a, b) {
-              if (a[0] === b[0]) return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
-              return a[0] < b[0] ? -1 : 1;
-            });
+      function filterTrackingQuery(rawSearch, stripTracking) {
+        if (!rawSearch || rawSearch === '?') return { search: '', stripped: 0 };
+        var body = rawSearch.charAt(0) === '?' ? rawSearch.slice(1) : rawSearch;
+        if (!body) return { search: '', stripped: 0 };
+        if (!stripTracking) return { search: '?' + body, stripped: 0 };
+        var rawSegments = body.split('&');
+        var kept = [];
+        var stripped = 0;
+        for (var i = 0; i < rawSegments.length; i++) {
+          var seg = rawSegments[i];
+          var eqIdx = seg.indexOf('=');
+          var rawKey = eqIdx >= 0 ? seg.slice(0, eqIdx) : seg;
+          var decodedKey = rawKey;
+          try {
+            decodedKey = decodeURIComponent(rawKey.replace(/\+/g, ' '));
+          } catch (_) {
+            decodedKey = rawKey;
           }
-          var nextSearch = new URLSearchParams();
-          entries.forEach(function (pair) { nextSearch.append(pair[0], pair[1]); });
-          var serialized = nextSearch.toString();
-          parsed.search = serialized ? '?' + serialized : '';
+          var lowerKey = decodedKey.toLowerCase();
+          if (TRACKING_PARAM_SET.has(lowerKey) || lowerKey.indexOf('utm_') === 0) {
+            stripped += 1;
+            continue;
+          }
+          kept.push(seg);
         }
-        if (opts.sortQuery && parsed.pathname.length > 1) {
-          parsed.pathname = parsed.pathname.replace(/\/+$/, '') || '/';
+        return { search: kept.length ? '?' + kept.join('&') : '', stripped: stripped };
+      }
+
+      function normalizeTabUrl(rawUrl, opts) {
+        var options = opts || {};
+        var cleaned = stripControlChars(rawUrl);
+        if (!cleaned) return { canonicalUrl: '', strippedParams: 0 };
+        var probe = cleaned.replace(/[\s\u00a0]+/g, '');
+        if (/^(?:javascript|data|vbscript):/i.test(probe)) return { canonicalUrl: '', strippedParams: 0 };
+
+        var stripTracking = options.stripTracking !== false && options.stripUtm !== false;
+        var keepHash = options.stripHash === true ? false : options.keepHash !== false;
+        var stripTrailingSlash = Boolean(options.stripTrailingSlash || options.sortQuery);
+
+        try {
+          var parsed = new URL(cleaned);
+          parsed.protocol = parsed.protocol.toLowerCase();
+          if (parsed.hostname) parsed.hostname = parsed.hostname.toLowerCase();
+          if (
+            (parsed.protocol === 'http:' && parsed.port === '80') ||
+            (parsed.protocol === 'https:' && parsed.port === '443')
+          ) {
+            parsed.port = '';
+          }
+          var strippedParams = 0;
+          if (!keepHash && parsed.hash) {
+            parsed.hash = '';
+          }
+          if (parsed.search) {
+            var filtered = filterTrackingQuery(parsed.search, stripTracking);
+            strippedParams = filtered.stripped;
+            if (options.sortQuery && filtered.search) {
+              var segs = filtered.search.slice(1).split('&');
+              segs.sort(function (a, b) {
+                return a < b ? -1 : a > b ? 1 : 0;
+              });
+              parsed.search = segs.length ? '?' + segs.join('&') : '';
+            } else {
+              parsed.search = filtered.search;
+            }
+          }
+          if (stripTrailingSlash && parsed.pathname.length > 1) {
+            parsed.pathname = parsed.pathname.replace(/\/+$/, '') || '/';
+          }
+          return { canonicalUrl: parsed.href, strippedParams: strippedParams };
+        } catch (_) {
+          return { canonicalUrl: cleaned, strippedParams: 0 };
         }
-        return { canonicalUrl: parsed.href, strippedParams: strippedParams };
       }
 
       function isGenericTitle(title, url, canonicalUrl, domain) {
         var t = collapseWs(title);
-        return !t || t === url || t === canonicalUrl || t === domain;
+        return !t || t === url || t === canonicalUrl || t === domain || /^loading\b/i.test(t);
       }
 
       function encodeMdUrl(urlStr) {
@@ -1338,11 +1448,16 @@
       }
 
       function escapeMdLinkText(str) {
-        return collapseWs(str).replace(/([\\[\]<>`])/g, '\\$1');
+        return collapseWs(str)
+          .replace(/\\/g, '\\\\')
+          .replace(/\[/g, '\\[')
+          .replace(/\]/g, '\\]')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
       }
 
       function escapeMdInline(str) {
-        return collapseWs(str).replace(/([\\[\]()<>_*`])/g, '\\$1');
+        return collapseWs(str).replace(/([\\`*_[\]()~<>])/g, '\\$1');
       }
 
       function yamlQuote(str) {
@@ -1351,11 +1466,21 @@
           .replace(/"/g, '\\"')
           .replace(/\r/g, '\\r')
           .replace(/\n/g, '\\n')
-          .replace(/\t/g, '\\t');
+          .replace(/\t/g, '\\t')
+          .replace(/\u2028/g, '\\u2028')
+          .replace(/\u2029/g, '\\u2029')
+          .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, function (ch) {
+            return '\\u' + ch.charCodeAt(0).toString(16).padStart(4, '0');
+          });
       }
 
       function isDangerousFormula(val) {
-        var trimmed = String(val == null ? '' : val).trim();
+        var raw = String(val == null ? '' : val);
+        if (!raw) return false;
+        var stripped = raw.replace(/^[ \u00a0\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u200b-\u200d\ufeff]+/, '');
+        if (!stripped) return false;
+        if (stripped.charAt(0) === '\t' || stripped.charAt(0) === '\r') return true;
+        var trimmed = stripped.trim();
         if (!trimmed) return false;
         var ch = trimmed.charAt(0);
         if (ch === '=' || ch === '@') return true;
@@ -1372,16 +1497,22 @@
       }
 
       function formatCsvCell(val, escapeFormulas) {
-        var clean = String(val == null ? '' : val).replace(/\r?\n/g, ' ').trim();
+        var clean = String(val == null ? '' : val)
+          .replace(/\r\n|\r|\n/g, ' ')
+          .replace(/[\u0000-\u001f\u007f\u200b-\u200d\ufeff]+/g, '')
+          .trim();
         var s = guardFormula(clean, escapeFormulas);
-        if (/[",\r\n]/.test(s)) {
+        if (/[",;\r\n]/.test(s)) {
           return '"' + s.replace(/"/g, '""') + '"';
         }
         return s;
       }
 
       function formatTsvCell(val, escapeFormulas) {
-        var clean = String(val == null ? '' : val).replace(/[\t\r\n]+/g, ' ').trim();
+        var clean = String(val == null ? '' : val)
+          .replace(/[\t\r\n]+/g, ' ')
+          .replace(/[\u0000-\u001f\u007f\u200b-\u200d\ufeff]+/g, '')
+          .trim();
         var s = guardFormula(clean, escapeFormulas);
         if (/["\t\r\n]/.test(s)) {
           return '"' + s.replace(/"/g, '""') + '"';
@@ -1402,41 +1533,198 @@
           });
       }
 
-      function buildNotebookLmPack(records, meta) {
-        if (records.length === 0) return '';
-        var clusters = groupByDomain(records);
-        var lines = [
-          '# ' + escapeMdInline(meta.bundleTitle),
-          '',
-          '- Source Formatter: SessionMD Local URL Deduplicator',
-          '- Deduplicated Source URLs: ' + records.length + ' (' + meta.duplicatesRemoved + ' duplicates merged from ' + meta.totalInput + ' items)',
-          '- Stripped Tracking Parameters: ' + meta.strippedParamsTotal,
-          '- Distinct Domains: ' + clusters.length,
-          ''
-        ];
+      function renderNotebookLmItemLine(item, maxSingleLine) {
+        if (item.fullLine.length <= maxSingleLine) {
+          return item.fullLine;
+        }
+        var linkCore = '- [' + item.escapedTitle + '](' + item.encodedHref + ')';
+        if (linkCore.length <= maxSingleLine) {
+          return linkCore;
+        }
+        var overhead = 5 + item.encodedHref.length;
+        if (maxSingleLine >= overhead + 1) {
+          var availTitle = maxSingleLine - overhead;
+          var shortTitle =
+            availTitle >= 4
+              ? trimSafeMdText(item.escapedTitle, availTitle - 3) + '...'
+              : trimSafeMdText(item.escapedTitle, availTitle) || 'link';
+          return '- [' + shortTitle + '](' + item.encodedHref + ')';
+        }
+        var bareLine = '- ' + item.encodedHref;
+        if (bareLine.length <= maxSingleLine) {
+          return bareLine;
+        }
+        var notice = '- ' + item.plainTitle + ' (URL exceeds part limit)';
+        return notice.length <= maxSingleLine
+          ? notice
+          : maxSingleLine > 5
+            ? trimSafeMdText(notice, maxSingleLine - 3) + '...'
+            : trimSafeMdText(notice, maxSingleLine);
+      }
 
-        if (meta.groupMode === 'flat') {
-          lines.push('## Deduplicated Sources (' + records.length + ')');
-          lines.push('');
-          records.forEach(function (rec) {
-            var suffix = rec.groupTitle ? ' | Group: ' + escapeMdInline(rec.groupTitle) : '';
-            lines.push('- [' + escapeMdLinkText(rec.title) + '](' + encodeMdUrl(rec.canonicalUrl) + ')' + suffix);
+      function buildNotebookLmBundle(records, meta, maxCharsOverride) {
+        var maxCharsPerPart =
+          Number.isFinite(Number(maxCharsOverride)) && Number(maxCharsOverride) >= 400
+            ? Math.floor(Number(maxCharsOverride))
+            : NOTEBOOKLM_BUDGET_CHARS;
+        if (!records || records.length === 0) {
+          return { parts: [], combinedMarkdown: '' };
+        }
+        var clusters = groupByDomain(records);
+        var bundleTitle = collapseWs((meta && meta.bundleTitle) || 'SessionMD Clean Sources');
+        var headerTitle = bundleTitle.length > 80 ? safeSliceUtf16(bundleTitle, 77) + '...' : bundleTitle;
+
+        var blockDefs = [];
+        if (meta && meta.groupMode === 'flat') {
+          blockDefs.push({
+            heading: '## Deduplicated Sources (' + records.length + ')',
+            contHeading: '## Deduplicated Sources (' + records.length + ', cont.)',
+            items: records.map(function (rec) {
+              var suffix = rec.groupTitle ? ' | Group: ' + escapeMdInline(rec.groupTitle) : '';
+              var escapedTitle = escapeMdLinkText(rec.title);
+              var encodedHref = encodeMdUrl(rec.canonicalUrl);
+              return {
+                plainTitle: collapseWs(rec.title || rec.domain),
+                escapedTitle: escapedTitle,
+                encodedHref: encodedHref,
+                fullLine: '- [' + escapedTitle + '](' + encodedHref + ')' + suffix
+              };
+            })
           });
         } else {
           clusters.forEach(function (cluster) {
-            lines.push('## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' sources)');
-            lines.push('');
-            cluster.items.forEach(function (rec) {
-              var metaParts = [];
-              if (rec.workspace) metaParts.push('Workspace: ' + escapeMdInline(rec.workspace));
-              if (rec.groupTitle) metaParts.push('Group: ' + escapeMdInline(rec.groupTitle));
-              var suffix = metaParts.length > 0 ? ' — ' + metaParts.join(' | ') : '';
-              lines.push('- [' + escapeMdLinkText(rec.title) + '](' + encodeMdUrl(rec.canonicalUrl) + ')' + suffix);
+            blockDefs.push({
+              heading: '## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' sources)',
+              contHeading: '## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' sources, cont.)',
+              items: cluster.items.map(function (rec) {
+                var metaParts = [];
+                if (rec.workspace) metaParts.push('Workspace: ' + escapeMdInline(rec.workspace));
+                if (rec.groupTitle) metaParts.push('Group: ' + escapeMdInline(rec.groupTitle));
+                var suffix = metaParts.length > 0 ? ' — ' + metaParts.join(' | ') : '';
+                var escapedTitle = escapeMdLinkText(rec.title);
+                var encodedHref = encodeMdUrl(rec.canonicalUrl);
+                return {
+                  plainTitle: collapseWs(rec.title || rec.domain),
+                  escapedTitle: escapedTitle,
+                  encodedHref: encodedHref,
+                  fullLine: '- [' + escapedTitle + '](' + encodedHref + ')' + suffix
+                };
+              })
             });
-            lines.push('');
           });
         }
-        return lines.join('\n').trim() + '\n';
+
+        function buildPartHeader(partNum, totalParts) {
+          var partSuffix = totalParts > 1 ? ' (Part ' + partNum + '/' + totalParts + ')' : '';
+          return [
+            '# ' + escapeMdInline(headerTitle) + partSuffix,
+            '',
+            '- Source Formatter: SessionMD Local URL Deduplicator',
+            '- Deduplicated Source URLs: ' + records.length + ' (' + ((meta && meta.duplicatesRemoved) || 0) + ' duplicates merged from ' + ((meta && meta.totalInput) || records.length) + ' items)',
+            '- Stripped Tracking Parameters: ' + ((meta && meta.strippedParamsTotal) || 0),
+            '- Distinct Domains: ' + clusters.length,
+            ''
+          ].join('\n');
+        }
+
+        function chunkBlocks(assumedTotalParts) {
+          var outBodies = [];
+          var currentBlocks = [];
+          var currentLen = 0;
+
+          function getBudget(partNum) {
+            var hdr = buildPartHeader(partNum, Math.max(partNum, assumedTotalParts));
+            return Math.max(60, maxCharsPerPart - hdr.length - 2);
+          }
+
+          function flush() {
+            if (currentBlocks.length > 0) {
+              outBodies.push(currentBlocks.join('\n\n'));
+              currentBlocks = [];
+              currentLen = 0;
+            }
+          }
+
+          for (var b = 0; b < blockDefs.length; b++) {
+            var blk = blockDefs[b];
+            var fullBlock = blk.heading + '\n\n' + blk.items.map(function (it) { return it.fullLine; }).join('\n');
+            var activeBudget = getBudget(outBodies.length + 1);
+            if (currentBlocks.length > 0 && currentLen + 2 + fullBlock.length <= activeBudget) {
+              currentBlocks.push(fullBlock);
+              currentLen += 2 + fullBlock.length;
+              continue;
+            }
+            flush();
+            var freshBudget = getBudget(outBodies.length + 1);
+            if (fullBlock.length <= freshBudget) {
+              currentBlocks.push(fullBlock);
+              currentLen = fullBlock.length;
+              continue;
+            }
+
+            // Whole-line chunking for oversized clusters so Markdown links & UTF-16 surrogates are never split
+            var idx = 0;
+            var subIdx = 0;
+            while (idx < blk.items.length) {
+              var partBudget = getBudget(outBodies.length + 1);
+              var h = subIdx === 0 ? blk.heading : blk.contHeading;
+              var safeH = h.length + 10 > partBudget ? safeSliceUtf16(h, Math.max(10, partBudget - 12)) + '...' : h;
+              var subLines = [];
+              var subLen = safeH.length + 2;
+              while (idx < blk.items.length) {
+                var maxLine = Math.max(12, partBudget - safeH.length - 2);
+                var line = renderNotebookLmItemLine(blk.items[idx], maxLine);
+                var addLen = subLines.length === 0 ? line.length : 1 + line.length;
+                if (subLines.length > 0 && subLen + addLen > partBudget) {
+                  break;
+                }
+                subLines.push(line);
+                subLen += addLen;
+                idx += 1;
+              }
+              var subBlock = safeH + '\n\n' + subLines.join('\n');
+              if (idx < blk.items.length) {
+                outBodies.push(subBlock);
+              } else {
+                currentBlocks = [subBlock];
+                currentLen = subBlock.length;
+              }
+              subIdx += 1;
+            }
+          }
+
+          flush();
+          return outBodies;
+        }
+
+        var assumedTotal = 1;
+        var bodies = chunkBlocks(assumedTotal);
+        for (var pass = 0; pass < 3 && bodies.length !== assumedTotal; pass += 1) {
+          assumedTotal = bodies.length;
+          bodies = chunkBlocks(assumedTotal);
+        }
+
+        var totalParts = bodies.length;
+        var parts = bodies.map(function (body, idx) {
+          var partNum = idx + 1;
+          var header = buildPartHeader(partNum, totalParts);
+          var content = header + '\n' + body + '\n';
+          return {
+            partNumber: partNum,
+            totalParts: totalParts,
+            content: content,
+            charCount: content.length
+          };
+        });
+
+        return {
+          parts: parts,
+          combinedMarkdown: parts.map(function (p) { return p.content; }).join('\n========================================\n\n')
+        };
+      }
+
+      function buildNotebookLmPack(records, meta, maxCharsOverride) {
+        return buildNotebookLmBundle(records, meta, maxCharsOverride).combinedMarkdown;
       }
 
       function buildObsidianMarkdown(records, meta) {
@@ -1504,6 +1792,42 @@
         return rows.join(lineEnding) + lineEnding;
       }
 
+      function buildDownloadPayloads(format, text, notebookBundle) {
+        if (!text) return [];
+        if (
+          format === 'notebooklm' &&
+          notebookBundle &&
+          Array.isArray(notebookBundle.parts) &&
+          notebookBundle.parts.length > 1
+        ) {
+          var total = notebookBundle.parts.length;
+          var pad = Math.max(2, String(total).length);
+          var totalStr = String(total).padStart(pad, '0');
+          return notebookBundle.parts.map(function (part, idx) {
+            var numStr = String(part.partNumber || idx + 1).padStart(pad, '0');
+            return {
+              filename: 'sessionmd-notebooklm-part-' + numStr + '-of-' + totalStr + '.md',
+              mime: 'text/markdown;charset=utf-8',
+              content: part.content
+            };
+          });
+        }
+        var meta = {
+          notebooklm: { ext: 'md', mime: 'text/markdown;charset=utf-8', prefix: 'sessionmd-notebooklm-pack' },
+          obsidian: { ext: 'md', mime: 'text/markdown;charset=utf-8', prefix: 'sessionmd-obsidian-workspace' },
+          urls: { ext: 'txt', mime: 'text/plain;charset=utf-8', prefix: 'sessionmd-clean-urls' },
+          tsv: { ext: 'tsv', mime: 'text/tab-separated-values;charset=utf-8', prefix: 'sessionmd-tabs' },
+          csv: { ext: 'csv', mime: 'text/csv;charset=utf-8', prefix: 'sessionmd-tabs' }
+        }[format] || { ext: 'txt', mime: 'text/plain;charset=utf-8', prefix: 'sessionmd-output' };
+        return [
+          {
+            filename: meta.prefix + '.' + meta.ext,
+            mime: meta.mime,
+            content: text
+          }
+        ];
+      }
+
       function updateView() {
         var raw = rawInputEl.value;
         var selectedMode = inputModeEl.value;
@@ -1521,6 +1845,13 @@
           parsedItems = parseJsonTabs(raw);
         } else if (effectiveMode === 'csv') {
           parsedItems = parseDelimitedTabs(raw, ',');
+          if (selectedMode === 'auto' && parsedItems.length === 0) {
+            parsedItems = parseLineTabs(raw);
+            if (parsedItems.length > 0) {
+              effectiveMode = 'lines';
+              detectedBadgeEl.textContent = 'Detected: ' + modeLabels.lines;
+            }
+          }
         } else if (effectiveMode === 'tsv') {
           parsedItems = parseDelimitedTabs(raw, '\t');
         } else {
@@ -1581,8 +1912,10 @@
           groupMode: groupModeEl.value || 'domain'
         };
 
+        var notebookBundle = buildNotebookLmBundle(records, meta);
+        currentNotebookBundle = notebookBundle;
         currentOutputs = {
-          notebooklm: buildNotebookLmPack(records, meta),
+          notebooklm: notebookBundle.combinedMarkdown,
           obsidian: buildObsidianMarkdown(records, meta),
           urls: records.length > 0 ? records.map(function (r) { return r.canonicalUrl; }).join('\n') + '\n' : '',
           tsv: buildDelimitedExport(records, formatTsvCell, '\t', '\n', opts.escapeFormulas),
@@ -1601,14 +1934,27 @@
         };
         outputLabelEl.textContent = labelMap[activeFormat];
 
+        var downloadBtn = document.getElementById('download-btn');
+        if (downloadBtn) {
+          downloadBtn.textContent =
+            activeFormat === 'notebooklm' && notebookBundle.parts.length > 1
+              ? 'Download ' + notebookBundle.parts.length + ' Parts (.md)'
+              : 'Download';
+        }
+
         var domainCount = groupByDomain(records).length;
-        var budgetPct = Math.min(100, (outText.length / NOTEBOOKLM_BUDGET_CHARS) * 100).toFixed(1);
+        var partCount = notebookBundle.parts.length;
+        var budgetPct = ((outText.length / NOTEBOOKLM_BUDGET_CHARS) * 100).toFixed(1);
+        var budgetNote =
+          partCount > 1
+            ? partCount + ' auto-chunked parts (<=350k chars/part; downloads as separate .md files)'
+            : budgetPct + '% of 350k NotebookLM part budget';
         statsOutputEl.textContent =
           parsedItems.length + ' input items · ' +
           records.length + ' unique URLs · ' +
           duplicatesRemoved + ' duplicates removed · ' +
           strippedParamsTotal + ' tracking params stripped · ' +
-          domainCount + ' domains (' + budgetPct + '% of 350k NotebookLM part budget)';
+          domainCount + ' domains (' + budgetNote + ')';
       }
 
       tabBtns.forEach(function (btn) {
@@ -1673,31 +2019,29 @@
 
       document.getElementById('download-btn').addEventListener('click', function () {
         var text = cleanOutputEl.value;
-        if (!text) {
+        var payloads = buildDownloadPayloads(activeFormat, text, currentNotebookBundle);
+        if (payloads.length === 0) {
           setStatus('Nothing to download yet.');
           return;
         }
-        var meta = {
-          notebooklm: { ext: 'md', mime: 'text/markdown;charset=utf-8', prefix: 'sessionmd-notebooklm-pack' },
-          obsidian: { ext: 'md', mime: 'text/markdown;charset=utf-8', prefix: 'sessionmd-obsidian-workspace' },
-          urls: { ext: 'txt', mime: 'text/plain;charset=utf-8', prefix: 'sessionmd-clean-urls' },
-          tsv: { ext: 'tsv', mime: 'text/tab-separated-values;charset=utf-8', prefix: 'sessionmd-tabs' },
-          csv: { ext: 'csv', mime: 'text/csv;charset=utf-8', prefix: 'sessionmd-tabs' }
-        }[activeFormat] || { ext: 'txt', mime: 'text/plain;charset=utf-8', prefix: 'sessionmd-output' };
-
-        var filename = meta.prefix + '.' + meta.ext;
-        var blob = new Blob([text], { type: meta.mime });
-        var url = URL.createObjectURL(blob);
-        var link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        setTimeout(function () {
-          URL.revokeObjectURL(url);
-        }, 1000);
-        setStatus('Downloaded ' + filename + '.');
+        payloads.forEach(function (item) {
+          var blob = new Blob([item.content], { type: item.mime });
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement('a');
+          link.href = url;
+          link.download = item.filename;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setTimeout(function () {
+            URL.revokeObjectURL(url);
+          }, 1000);
+        });
+        if (payloads.length > 1) {
+          setStatus('Downloaded ' + payloads.length + ' separate NotebookLM .md parts (<=350k chars each).');
+        } else {
+          setStatus('Downloaded ' + payloads[0].filename + '.');
+        }
       });
 
       [
