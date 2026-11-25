@@ -565,7 +565,7 @@
         <p>SessionMD stores data strictly inside your local browser profile:</p>
         <ol>
           <li><strong>Saved Workspaces (<code>sessionmd_workspaces_v1</code>):</strong> Tab sessions and Chrome tab group metadata you explicitly choose to save. You can update, export as JSON/Markdown/CSV, or delete any workspace at any time.</li>
-          <li><strong>Crash-Safe Auto-Snapshots (<code>sessionmd_crash_snapshots_v1</code>):</strong> A rolling local ring buffer (up to 12 snapshots) captured periodically by local alarms to help you recover tabs after unexpected browser restarts.</li>
+          <li><strong>Crash-Safe Auto-Snapshots (<code>sessionmd_crash_snapshots_v1</code>):</strong> A rolling local ring buffer (up to 48 snapshots, 8 MB cap) captured periodically by local alarms to help you recover tabs after unexpected browser restarts.</li>
           <li><strong>Pro License State (<code>sessionmd_pro_license_v1</code>):</strong> Optional Polar.sh license key, activation ID, and last validation timestamp used solely to support 12-hour revalidation and a 7-day offline grace window.</li>
         </ol>
       </section>
@@ -588,7 +588,7 @@
         <h2>5. Chrome Web Store Permission Summary</h2>
         <ul>
           <li><code>tabs</code> + <code>tabGroups</code>: Reads open tab URLs, titles, pinned state, and Chrome Tab Group labels/colors strictly to save, deduplicate, search, and restore your browser sessions locally. Never accesses webpage DOM contents.</li>
-          <li><code>storage</code>: Stores saved workspaces, up to 12 crash-recovery auto-snapshots, and optional Polar Pro license activation state strictly on your device.</li>
+          <li><code>storage</code>: Stores saved workspaces, up to 48 crash-recovery auto-snapshots, and optional Polar Pro license activation state strictly on your device.</li>
           <li><code>alarms</code>: Triggers periodic local crash-safe auto-snapshots (every 15 minutes) and 12-hour license revalidation when a Pro key is active.</li>
           <li><code>host_permissions</code> (<code>https://api.polar.sh/*</code>): Used solely when an optional SessionMD Pro license key is activated or revalidated over HTTPS with Polar.sh; Free users trigger zero outbound network requests, and SessionMD requests zero <code>&lt;all_urls&gt;</code> or website host access.</li>
         </ul>
