@@ -790,6 +790,7 @@
           <label><input type="checkbox" id="opt-dedupe" checked /> Deduplicate URLs</label>
           <label><input type="checkbox" id="opt-strip-hash" /> Strip <code>#fragment</code> anchors</label>
           <label><input type="checkbox" id="opt-sort-query" /> Sort query keys &amp; trim <code>/</code></label>
+          <label><input type="checkbox" id="opt-strip-launch-ref" /> Strip launch referral <code>?ref=</code> (<code>producthunt</code>, <code>hackernews</code>, <code>reddit</code>, <code>x</code>)</label>
           <label><input type="checkbox" id="opt-escape-formulas" checked /> Guard formulas (<code>= + - @</code>)</label>
         </div>
 
@@ -815,7 +816,7 @@
         </div>
 
         <div class="meta-bar">
-          <output id="stats-output" for="raw-input bundle-title input-mode group-mode opt-strip-utm opt-dedupe opt-strip-hash opt-sort-query opt-escape-formulas">0 input items &middot; 0 unique URLs &middot; 0 duplicates removed</output>
+          <output id="stats-output" for="raw-input bundle-title input-mode group-mode opt-strip-utm opt-dedupe opt-strip-hash opt-sort-query opt-strip-launch-ref opt-escape-formulas">0 input items &middot; 0 unique URLs &middot; 0 duplicates removed</output>
           <span class="status-msg" id="status-msg"></span>
         </div>
       </form>
@@ -892,7 +893,7 @@
 
     <section class="cta-box">
       <h2>Stop Copying Tab URLs by Hand &mdash; Automate Crash-Safe Workspaces in Chrome</h2>
-      <p>The <strong>SessionMD</strong> Chrome extension saves open windows and Chrome Tab Groups automatically with a 12-snapshot local crash-recovery ring buffer and zero <code>&lt;all_urls&gt;</code> permissions. Upgrade to <strong>SessionMD Pro ($29 one-time)</strong> for unlimited saved workspaces, cross-workspace deduplicated digests, and auto-chunked 350k-character Google NotebookLM source packs.</p>
+      <p>The <strong>SessionMD</strong> Chrome extension saves open windows and Chrome Tab Groups automatically with a local crash-recovery ring buffer of up to 48 snapshots and zero <code>&lt;all_urls&gt;</code> permissions. Upgrade to <strong>SessionMD Pro ($29 one-time)</strong> for unlimited saved workspaces, cross-workspace deduplicated digests, and auto-chunked 350k-character Google NotebookLM source packs.</p>
       <div class="cta-row">
         <a class="btn primary" href="https://chromewebstore.google.com/detail/sessionmd-%E2%80%94-crash-safe-ta/iehkfahkfobkcpcfpkhjcnbabeiigaje" target="_blank" rel="noopener">Add to Chrome &mdash; Free</a>
         <a class="btn secondary" href="https://microsoftedge.microsoft.com/addons/detail/bkaeglckkmdkjkcdchcafogojcadamcm" target="_blank" rel="noopener">Add to Edge &mdash; Free</a>
@@ -1000,6 +1001,13 @@
         'ref_src'
       ]);
 
+      var LAUNCH_REFERRAL_VALUES = new Set([
+        'producthunt',
+        'hackernews',
+        'reddit',
+        'x'
+      ]);
+
       var NOTEBOOKLM_BUDGET_CHARS = 350000;
 
       var SAMPLE_RESEARCH = [
@@ -1039,6 +1047,7 @@
       var optDedupeEl = document.getElementById('opt-dedupe');
       var optStripHashEl = document.getElementById('opt-strip-hash');
       var optSortQueryEl = document.getElementById('opt-sort-query');
+      var optStripLaunchRefEl = document.getElementById('opt-strip-launch-ref');
       var optEscapeFormulasEl = document.getElementById('opt-escape-formulas');
       var detectedBadgeEl = document.getElementById('detected-badge');
       var outputLabelEl = document.getElementById('output-label');
@@ -1359,11 +1368,11 @@
         }
       }
 
-      function filterTrackingQuery(rawSearch, stripTracking) {
+      function filterTrackingQuery(rawSearch, stripTracking, stripLaunchRef) {
         if (!rawSearch || rawSearch === '?') return { search: '', stripped: 0 };
         var body = rawSearch.charAt(0) === '?' ? rawSearch.slice(1) : rawSearch;
         if (!body) return { search: '', stripped: 0 };
-        if (!stripTracking) return { search: '?' + body, stripped: 0 };
+        if (!stripTracking && !stripLaunchRef) return { search: '?' + body, stripped: 0 };
         var rawSegments = body.split('&');
         var kept = [];
         var stripped = 0;
@@ -1378,9 +1387,22 @@
             decodedKey = rawKey;
           }
           var lowerKey = decodedKey.toLowerCase();
-          if (TRACKING_PARAM_SET.has(lowerKey) || lowerKey.indexOf('utm_') === 0) {
+          if (stripTracking && (TRACKING_PARAM_SET.has(lowerKey) || lowerKey.indexOf('utm_') === 0)) {
             stripped += 1;
             continue;
+          }
+          if (stripLaunchRef && lowerKey === 'ref' && eqIdx >= 0) {
+            var rawVal = seg.slice(eqIdx + 1);
+            var decodedVal = rawVal;
+            try {
+              decodedVal = decodeURIComponent(rawVal.replace(/\+/g, ' '));
+            } catch (_) {
+              decodedVal = rawVal;
+            }
+            if (LAUNCH_REFERRAL_VALUES.has(decodedVal.trim().toLowerCase())) {
+              stripped += 1;
+              continue;
+            }
           }
           kept.push(seg);
         }
@@ -1395,6 +1417,7 @@
         if (/^(?:javascript|data|vbscript):/i.test(probe)) return { canonicalUrl: '', strippedParams: 0 };
 
         var stripTracking = options.stripTracking !== false && options.stripUtm !== false;
+        var stripLaunchRef = Boolean(options.stripLaunchRef);
         var keepHash = options.stripHash === true ? false : options.keepHash !== false;
         var stripTrailingSlash = Boolean(options.stripTrailingSlash || options.sortQuery);
 
@@ -1413,7 +1436,7 @@
             parsed.hash = '';
           }
           if (parsed.search) {
-            var filtered = filterTrackingQuery(parsed.search, stripTracking);
+            var filtered = filterTrackingQuery(parsed.search, stripTracking, stripLaunchRef);
             strippedParams = filtered.stripped;
             if (options.sortQuery && filtered.search) {
               var segs = filtered.search.slice(1).split('&');
@@ -1593,9 +1616,10 @@
           });
         } else {
           clusters.forEach(function (cluster) {
+            var sourceUnit = cluster.count === 1 ? 'source' : 'sources';
             blockDefs.push({
-              heading: '## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' sources)',
-              contHeading: '## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' sources, cont.)',
+              heading: '## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' ' + sourceUnit + ')',
+              contHeading: '## Domain Cluster: ' + cluster.domain + ' (' + cluster.count + ' ' + sourceUnit + ', cont.)',
               items: cluster.items.map(function (rec) {
                 var metaParts = [];
                 if (rec.workspace) metaParts.push('Workspace: ' + escapeMdInline(rec.workspace));
@@ -1863,6 +1887,7 @@
           dedupe: optDedupeEl.checked,
           stripHash: optStripHashEl.checked,
           sortQuery: optSortQueryEl.checked,
+          stripLaunchRef: Boolean(optStripLaunchRefEl && optStripLaunchRefEl.checked),
           escapeFormulas: optEscapeFormulasEl.checked
         };
 
@@ -2053,6 +2078,7 @@
         optDedupeEl,
         optStripHashEl,
         optSortQueryEl,
+        optStripLaunchRefEl,
         optEscapeFormulasEl
       ].forEach(function (el) {
         if (!el) return;
