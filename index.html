@@ -14,7 +14,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="SessionMD by FlowBench Lab" />
   <meta property="og:title" content="SessionMD — Crash-Safe Tab Saver &amp; Markdown Workspace" />
-  <meta property="og:description" content="Save multi-window Chrome sessions locally with 12-snapshot crash recovery, UTM URL deduplication, Obsidian YAML Markdown, CSV/TSV export, and NotebookLM source packs." />
+  <meta property="og:description" content="Save multi-window Chrome sessions locally with up to 48 crash-recovery auto-snapshots, UTM URL deduplication, Obsidian YAML Markdown, CSV/TSV export, and NotebookLM source packs." />
   <meta property="og:url" content="https://lhphong09t2.github.io/sessionmd/" />
   <meta property="og:image" content="https://lhphong09t2.github.io/sessionmd/og-card-1200x630.png" />
   <meta property="og:image:width" content="1200" />
@@ -87,7 +87,7 @@
             "name": "How does empty-window clobber protection prevent lost sessions after a browser crash?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "SessionMD maintains a rolling local ring buffer of up to 12 crash-recovery auto-snapshots every 15 minutes. If Chrome restarts onto a single blank New Tab window, SessionMD detects the empty-window state and refuses to overwrite your previous multi-tab snapshot history."
+              "text": "SessionMD maintains a rolling local ring buffer of up to 48 crash-recovery auto-snapshots (8 MB budget) every 15 minutes. If Chrome restarts onto a single blank New Tab window, SessionMD detects the empty-window state and refuses to overwrite your previous multi-tab snapshot history."
             }
           },
           {
@@ -717,6 +717,17 @@
       .plan-card { padding: 20px; }
     }
 
+    .table-scroll-hint {
+      display: none;
+      margin: 0 0 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    @media (max-width: 720px) {
+      .table-scroll-hint { display: block; }
+    }
+
     .table-scroll {
       width: 100%;
       overflow-x: auto;
@@ -987,7 +998,7 @@
         <span>Chrome Manifest V3 &middot; Zero Page Scraping &middot; Zero Tracking</span>
       </div>
       <h1>Crash-Safe Tab Sessions &amp; <span class="emerald-accent">Markdown Workspaces</span> Ready for <span class="cyan-accent">Obsidian &amp; NotebookLM</span></h1>
-      <p class="hero-lead">Built by <strong>FlowBench Lab</strong>. Protect multi-window research sessions with a 12-snapshot local ring buffer, strip <code>utm_*</code> &amp; click-ID duplicates, preserve Chrome Tab Groups, and export straight to Obsidian YAML Markdown, Google Sheets TSV, RFC 4180 CSV, or Google NotebookLM bundles.</p>
+      <p class="hero-lead">Built by <strong>FlowBench Lab</strong>. Protect multi-window research sessions with a local ring buffer of up to 48 crash snapshots, strip <code>utm_*</code> &amp; click-ID duplicates, preserve Chrome Tab Groups, and export straight to Obsidian YAML Markdown, Google Sheets TSV, RFC 4180 CSV, or Google NotebookLM bundles.</p>
 
       <div class="hero-ctas">
         <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/sessionmd-%E2%80%94-crash-safe-ta/iehkfahkfobkcpcfpkhjcnbabeiigaje" target="_blank" rel="noopener">
@@ -1005,7 +1016,7 @@
           <span>Unlock Pro Lifetime &mdash; $29</span>
         </a>
       </div>
-      <p class="hero-subnote">Free core forever (5 workspaces + 12 crash snapshots) &middot; Works on Chrome, Brave, Arc &amp; Edge &middot; Need browser-only paste cleanup? <a href="./tab-deduper.html">Open Free Tab Deduper &rarr;</a></p>
+      <p class="hero-subnote">Free core forever (5 workspaces + up to 48 crash snapshots) &middot; Works on Chrome, Brave, Arc &amp; Edge &middot; Need browser-only paste cleanup? <a href="./tab-deduper.html">Open Free Tab Deduper &rarr;</a></p>
 
       <div class="showcase-shell" aria-label="SessionMD Workspace Capture and Obsidian Markdown Preview">
         <div class="showcase-bar">
@@ -1034,10 +1045,10 @@
         <article class="bento-card span-7">
           <div>
             <span class="bento-badge">Crash-Safe Ring Buffer</span>
-            <h3>12 Rolling Auto-Snapshots with Empty-Window Clobber Protection</h3>
+            <h3>Up to 48 Rolling Auto-Snapshots with Empty-Window Clobber Protection</h3>
             <p>SessionMD captures rolling local backups every 15 minutes via <code>chrome.alarms</code>. If Chrome crashes and reopens onto a single blank <code>New Tab</code>, SessionMD blocks empty-window overwrites so your real multi-window session stays recoverable.</p>
           </div>
-          <pre class="code-mini">snapshot_ring_buffer: 12 slots (chrome.storage.local)
+          <pre class="code-mini">snapshot_ring_buffer: up to 48 slots / 8 MB (chrome.storage.local)
 empty_window_guard:   SKIP_EMPTY_OVERWRITE enabled
 dedupe_fingerprint:   skips identical idle intervals</pre>
         </article>
@@ -1105,7 +1116,7 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
             <p class="plan-desc">Crash-safe session recovery, URL deduplication, and single-workspace Markdown/CSV exports.</p>
             <ul class="plan-list">
               <li>Up to <strong>5 saved workspaces</strong> (up to 2,000 tabs per workspace)</li>
-              <li><strong>12 rolling crash-safe auto-snapshots</strong> (every 15 minutes)</li>
+              <li><strong>Up to 48 rolling crash-safe auto-snapshots</strong> (every 15 minutes)</li>
               <li>UTM &amp; click-ID URL deduplication + Chrome Tab Group preservation</li>
               <li>Obsidian YAML + Markdown, RFC 4180 CSV, Google Sheets TSV &amp; JSON backup</li>
               <li>Instant <code>/</code> keyboard search &amp; live <code>+added / -removed</code> tab diff</li>
@@ -1126,6 +1137,7 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
               <li><strong>Unlimited saved workspaces</strong> stored locally on your machine</li>
               <li><strong>Google NotebookLM Source Packager</strong> (auto-chunked 350k-char <code>.md</code> bundles)</li>
               <li><strong>Multi-Workspace Deduplicated Digest</strong> &amp; <strong>Batch CSV Export</strong></li>
+              <li>Up to <strong>5 browsers/devices</strong> per license key</li>
               <li>12-hour license revalidation + <strong>7-day offline grace window</strong></li>
             </ul>
           </div>
@@ -1133,6 +1145,7 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
         </div>
       </div>
 
+      <p class="table-scroll-hint">Swipe horizontally to compare all columns &rarr;</p>
       <div class="table-scroll">
         <table class="compare-table">
           <thead>
@@ -1152,8 +1165,8 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
             </tr>
             <tr>
               <td><strong>Crash-Safe Rolling Auto-Snapshots</strong></td>
-              <td>Up to 12 snapshots (15m alarm)</td>
-              <td class="pro-val">Up to 12 snapshots (15m alarm)</td>
+              <td>Up to 48 snapshots (15m alarm, 8 MB cap)</td>
+              <td class="pro-val">Up to 48 snapshots (15m alarm, 8 MB cap)</td>
               <td class="muted-cell">Empty-window clobber protection built in</td>
             </tr>
             <tr>
@@ -1185,6 +1198,12 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
               <td>Included (<code>+added / -removed</code> diff)</td>
               <td class="pro-val">Included (<code>+added / -removed</code> diff)</td>
               <td class="muted-cell">Full offline JSON export &amp; import portability</td>
+            </tr>
+            <tr>
+              <td><strong>Concurrent Browser / Device Activations</strong></td>
+              <td>Unlimited browsers</td>
+              <td class="pro-val">Up to 5 browsers/devices per key</td>
+              <td class="muted-cell">Self-serve Polar Customer Portal key</td>
             </tr>
             <tr>
               <td><strong>Offline Resilience &amp; Network Traffic</strong></td>
@@ -1256,7 +1275,7 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
             <span class="faq-plus" aria-hidden="true">+</span>
           </summary>
           <div class="faq-body">
-            Traditional session savers often overwrite your saved state with a single blank tab when Chrome restarts after an OS reboot or crash. SessionMD maintains a 12-slot rolling ring buffer (<code>sessionmd_crash_snapshots_v1</code>) and automatically skips single-blank-tab auto-backups when your prior snapshot held real multi-tab work.
+            Traditional session savers often overwrite your saved state with a single blank tab when Chrome restarts after an OS reboot or crash. SessionMD maintains a rolling ring buffer of up to 48 snapshots within an 8 MB local budget (<code>sessionmd_crash_snapshots_v1</code>) and automatically skips single-blank-tab auto-backups when your prior snapshot held real multi-tab work.
           </div>
         </details>
 
