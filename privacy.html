@@ -557,7 +557,7 @@
     <article class="policy-card">
       <section id="telemetry" class="policy-section">
         <h2>1. Zero Page Scraping, Zero Telemetry</h2>
-        <p>SessionMD is a 100% local Chrome Manifest V3 session and tab manager. SessionMD uses strictly scoped browser APIs (<code>storage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>) plus narrow <code>host_permissions</code> (<code>https://api.polar.sh/*</code>, used solely when an optional Pro license key is activated or revalidated) &mdash; with zero <code>&lt;all_urls&gt;</code>, website host access, <code>activeTab</code>, or <code>scripting</code> permissions. It <strong>never</strong> reads webpage DOM contents, cookies, or browsing history, and <strong>never</strong> transmits your open tabs, titles, or URLs to any developer server or analytics endpoint.</p>
+        <p>SessionMD is a 100% local Chrome Manifest V3 session and tab manager. SessionMD uses strictly scoped browser APIs (<code>storage</code>, <code>unlimitedStorage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>) plus narrow <code>host_permissions</code> (<code>https://api.polar.sh/*</code>, used solely when an optional Pro license key is activated or revalidated) &mdash; with zero <code>&lt;all_urls&gt;</code>, website host access, <code>activeTab</code>, or <code>scripting</code> permissions. It <strong>never</strong> reads webpage DOM contents, cookies, or browsing history, and <strong>never</strong> transmits your open tabs, titles, or URLs to any developer server or analytics endpoint.</p>
       </section>
 
       <section id="storage" class="policy-section">
@@ -588,7 +588,7 @@
         <h2>5. Chrome Web Store Permission Summary</h2>
         <ul>
           <li><code>tabs</code> + <code>tabGroups</code>: Reads open tab URLs, titles, pinned state, and Chrome Tab Group labels/colors strictly to save, deduplicate, search, and restore your browser sessions locally. Never accesses webpage DOM contents.</li>
-          <li><code>storage</code>: Stores saved workspaces, up to 48 crash-recovery auto-snapshots, and optional Polar Pro license activation state strictly on your device.</li>
+          <li><code>storage</code> + <code>unlimitedStorage</code>: Stores saved workspaces, up to 48 crash-recovery auto-snapshots, and optional Polar Pro license activation state strictly on your device.</li>
           <li><code>alarms</code>: Triggers periodic local crash-safe auto-snapshots (every 15 minutes) and 12-hour license revalidation when a Pro key is active.</li>
           <li><code>host_permissions</code> (<code>https://api.polar.sh/*</code>): Used solely when an optional SessionMD Pro license key is activated or revalidated over HTTPS with Polar.sh; Free users trigger zero outbound network requests, and SessionMD requests zero <code>&lt;all_urls&gt;</code> or website host access.</li>
         </ul>
@@ -639,6 +639,7 @@
         <div class="footer-col">
           <h3>FlowBench Lab</h3>
           <ul>
+            <li><a href="https://lhphong09t2.github.io/flowbench/python-lab/?lesson=01" target="_blank" rel="noopener">FlowBench Python 3.12 Web Lab</a></li>
             <li><a href="https://www.youtube.com/@FlowBenchLab" target="_blank" rel="noopener">YouTube (@FlowBenchLab)</a></li>
             <li><a href="https://www.facebook.com/flowbenchlab" target="_blank" rel="noopener">Facebook Page</a></li>
             <li><a href="mailto:lhphong09t2@gmail.com">lhphong09t2@gmail.com</a></li>
@@ -647,7 +648,7 @@
       </div>
 
       <div class="footer-bottom">
-        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.1</span>
+        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.1.1</span>
         <span>100% Local Session Storage &middot; Zero Page Scraping or Telemetry</span>
       </div>
     </div>

@@ -37,7 +37,7 @@
         "name": "SessionMD — Crash-Safe Tab Saver & Markdown Workspace",
         "operatingSystem": "Chrome, Brave, Edge, Arc, Chromium",
         "applicationCategory": "BrowserApplication",
-        "softwareVersion": "1.1.0",
+        "softwareVersion": "1.1.1",
         "url": "https://lhphong09t2.github.io/sessionmd/",
         "installUrl": "https://chromewebstore.google.com/detail/sessionmd-%E2%80%94-crash-safe-ta/iehkfahkfobkcpcfpkhjcnbabeiigaje",
         "downloadUrl": "https://chromewebstore.google.com/detail/sessionmd-%E2%80%94-crash-safe-ta/iehkfahkfobkcpcfpkhjcnbabeiigaje",
@@ -79,7 +79,7 @@
             "name": "Why doesn't SessionMD request all-sites, activeTab, or scripting permissions?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "SessionMD uses strictly scoped Chrome Manifest V3 permissions (\"storage\", \"tabs\", \"tabGroups\", \"alarms\") and \"host_permissions\": [\"https://api.polar.sh/*\"] (used solely when an optional Pro license key is activated or revalidated; zero <all_urls> or website host access). It never injects scripts into webpages, never reads webpage DOM contents or cookies, and never uploads your open tabs or URLs to external servers."
+              "text": "SessionMD uses strictly scoped Chrome Manifest V3 permissions (\"storage\", \"unlimitedStorage\", \"tabs\", \"tabGroups\", \"alarms\") and \"host_permissions\": [\"https://api.polar.sh/*\"] (used solely when an optional Pro license key is activated or revalidated; zero <all_urls> or website host access). It never injects scripts into webpages, never reads webpage DOM contents or cookies, and never uploads your open tabs or URLs to external servers."
             }
           },
           {
@@ -1033,7 +1033,7 @@
             <span class="dot-y"></span>
             <span class="dot-g"></span>
           </div>
-          <div class="showcase-url">SessionMD v1.1 &mdash; Local Chrome Session &amp; Markdown Engine</div>
+          <div class="showcase-url">SessionMD v1.1.1 &mdash; Local Chrome Session &amp; Markdown Engine</div>
           <div class="showcase-status">0 KB Telemetry</div>
         </div>
         <div class="showcase-img-wrap">
@@ -1065,10 +1065,10 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
           <div>
             <span class="bento-badge">Least-Privilege MV3</span>
             <h3>Zero <code>&lt;all_urls&gt;</code> &amp; Zero DOM Scraping</h3>
-            <p>Uses only <code>storage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>, plus <code>https://api.polar.sh/*</code> host access used solely when an optional Pro license key is activated or revalidated &mdash; zero <code>&lt;all_urls&gt;</code> or website host access, zero content scripts, and zero analytics.</p>
+            <p>Uses only <code>storage</code>, <code>unlimitedStorage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>, plus <code>https://api.polar.sh/*</code> host access used solely when an optional Pro license key is activated or revalidated &mdash; zero <code>&lt;all_urls&gt;</code> or website host access, zero content scripts, and zero analytics.</p>
           </div>
           <pre class="code-mini">"permissions": [
-  "storage", "tabs", "tabGroups", "alarms"
+  "storage", "unlimitedStorage", "tabs", "tabGroups", "alarms"
 ],
 "host_permissions": ["https://api.polar.sh/*"]</pre>
         </article>
@@ -1274,7 +1274,7 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
             <span class="faq-plus" aria-hidden="true">+</span>
           </summary>
           <div class="faq-body">
-            SessionMD manages tab metadata, never webpage contents. Manifest V3 <code>permissions</code> are scoped strictly to <code>storage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>, with <code>"host_permissions": ["https://api.polar.sh/*"]</code> used solely when an optional Pro license key is activated or revalidated (zero <code>&lt;all_urls&gt;</code> or website host access). SessionMD cannot inject scripts, cannot read banking or internal admin DOMs, and never transmits your browsing sessions anywhere.
+            SessionMD manages tab metadata, never webpage contents. Manifest V3 <code>permissions</code> are scoped strictly to <code>storage</code>, <code>unlimitedStorage</code>, <code>tabs</code>, <code>tabGroups</code>, and <code>alarms</code>, with <code>"host_permissions": ["https://api.polar.sh/*"]</code> used solely when an optional Pro license key is activated or revalidated (zero <code>&lt;all_urls&gt;</code> or website host access). SessionMD cannot inject scripts, cannot read banking or internal admin DOMs, and never transmits your browsing sessions anywhere.
           </div>
         </details>
 
@@ -1378,6 +1378,7 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
         <div class="footer-col">
           <h3>FlowBench Lab</h3>
           <ul>
+            <li><a href="https://lhphong09t2.github.io/flowbench/python-lab/?lesson=01" target="_blank" rel="noopener">FlowBench Python 3.12 Web Lab</a></li>
             <li><a href="https://www.youtube.com/@FlowBenchLab" target="_blank" rel="noopener">YouTube (@FlowBenchLab)</a></li>
             <li><a href="https://www.facebook.com/flowbenchlab" target="_blank" rel="noopener">Facebook Page</a></li>
             <li><a href="mailto:lhphong09t2@gmail.com">lhphong09t2@gmail.com</a></li>
@@ -1386,7 +1387,7 @@ dedupe_fingerprint:   skips identical idle intervals</pre>
       </div>
 
       <div class="footer-bottom">
-        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.1</span>
+        <span>&copy; 2026 FlowBench Lab &middot; SessionMD v1.1.1</span>
         <span>100% Local Session Storage &middot; Zero Page Scraping or Telemetry</span>
       </div>
     </div>
